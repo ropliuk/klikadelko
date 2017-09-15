@@ -25,45 +25,81 @@ wierszUI = function(id) {
       tagList()
     ),
     bsModal(ns("modalnew"), "Edytuj warunki wiersza", "BUTnew", size = "large",
-      h4('Cechy SP'),
+      # h4('Cechy SP'),
       fluidRow(
+
+        tabsetPanel(
+          tabPanel('Cechy SP', fluidRow(column(2, ui.mw(ns, 's')),
+          column(2, ui.pp(ns, 's')),
+          column(4, ui.ludnosc(ns, 's')),
+          column(4, ui.w.szk(ns, 's')),
+          column(4, ui.wynik.s.szkoly(ns, 's')),
+          column(4, ui.wojewodztwo(ns, 's')))),
+          tabPanel('Cechy ucznia SP', fluidRow(
+            column(4, ui.rok(ns, 's')),
+            column(4, ui.wynik(ns, 's', '40')),
+            column(3, ui.dysl(ns, 's')),
+            column(3, ui.laureat(ns, 's'))
+          )),
+          tabPanel('Cechy gimnazjum', fluidRow(
+            column(2, ui.mw(ns, 'g')),
+            column(2, ui.pp(ns, 'g')),
+            column(4, ui.ludnosc(ns, 'g')),
+            column(4, ui.w.szk(ns, 'g')),
+            column(4, ui.wynik.s.szkoly(ns, 'g')),
+            column(4, ui.wojewodztwo(ns, 'g'))
+          )),
+          tabPanel('Cechy ucznia gimnazjum', fluidRow(
+            column(4, ui.rok(ns, 'g')),
+            column(3, ui.dysl(ns, 'g')),
+            column(3, ui.rocznik(ns)),
+            column(3, ui.zmiana.powiatu(ns)),
+            column(3, ui.rejonowosc(ns)),
+            column(3, ui.laureat(ns, 'gh')),
+            column(3, ui.laureat(ns, 'gm'))
+          ) )
+        )
+        # ,
+
+
+
         # lapply(
         #   LISTA_FILTROW,
         #   function(nazwa){ column(4, filtryUI[[nazwa]](ns)) }
         # )
-        column(2, ui.mw(ns, 's')),
-        column(2, ui.pp(ns, 's')),
-        column(4, ui.ludnosc(ns, 's')),
-        column(4, ui.w.szk(ns, 's')),
-        column(4, ui.wynik.s.szkoly(ns, 's')),
-        column(4, ui.wojewodztwo(ns, 's'))
-      ),
-      h4('Cechy ucznia w SP'),
-      fluidRow(
-        column(4, ui.rok(ns, 's')),
-        column(4, ui.wynik(ns, 's', '40')),
-        column(3, ui.dysl(ns, 's')),
-        column(3, ui.laureat(ns, 's'))
-      ),
-      h4('Cechy gimnazjum'),
-      fluidRow(
-        column(2, ui.mw(ns, 'g')),
-        column(2, ui.pp(ns, 'g')),
-        column(4, ui.ludnosc(ns, 'g')),
-        column(4, ui.w.szk(ns, 'g')),
-        column(4, ui.wynik.s.szkoly(ns, 'g')),
-        column(4, ui.wojewodztwo(ns, 'g'))
-      ),
-      h4('Cechy ucznia w gimnazjum'),
-      fluidRow(
-        column(4, ui.rok(ns, 'g')),
-        column(3, ui.dysl(ns, 'g')),
-        column(3, ui.rocznik(ns)),
-        column(3, ui.zmiana.powiatu(ns)),
-        column(3, ui.rejonowosc(ns)),
-        column(3, ui.laureat(ns, 'gh')),
-        column(3, ui.laureat(ns, 'gm'))
+        # column(2, ui.pp(ns, 's')),
+        # column(4, ui.ludnosc(ns, 's')),
+        # column(4, ui.w.szk(ns, 's')),
+        # column(4, ui.wynik.s.szkoly(ns, 's')),
+        # column(4, ui.wojewodztwo(ns, 's'))
       )
+      # ,
+      # h4('Cechy ucznia w SP'),
+      # fluidRow(
+      #   column(4, ui.rok(ns, 's')),
+      #   column(4, ui.wynik(ns, 's', '40')),
+      #   column(3, ui.dysl(ns, 's')),
+      #   column(3, ui.laureat(ns, 's'))
+      # ),
+      # h4('Cechy gimnazjum'),
+      # fluidRow(
+      #   column(2, ui.mw(ns, 'g')),
+      #   column(2, ui.pp(ns, 'g')),
+      #   column(4, ui.ludnosc(ns, 'g')),
+      #   column(4, ui.w.szk(ns, 'g')),
+      #   column(4, ui.wynik.s.szkoly(ns, 'g')),
+      #   column(4, ui.wojewodztwo(ns, 'g'))
+      # ),
+      # h4('Cechy ucznia w gimnazjum'),
+      # fluidRow(
+      #   column(4, ui.rok(ns, 'g')),
+      #   column(3, ui.dysl(ns, 'g')),
+      #   column(3, ui.rocznik(ns)),
+      #   column(3, ui.zmiana.powiatu(ns)),
+      #   column(3, ui.rejonowosc(ns)),
+      #   column(3, ui.laureat(ns, 'gh')),
+      #   column(3, ui.laureat(ns, 'gm'))
+      # )
     )
   )
 }
