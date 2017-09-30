@@ -119,7 +119,6 @@ rysujWiersze = function(input, output) {
   }
 
   observeEvent(wierszWspolny$edytujWiersz, {
-    # js$setDisableNonselChildren()
     js$reactToClicksUnderRadios()
     ustaw_tab_wyszarzen_wspolnych()
   }, priority = 2)
@@ -127,7 +126,6 @@ rysujWiersze = function(input, output) {
   lapply(1:WIERSZE, function(i) {
     klucz = paste0('wiersz', i)
     observeEvent(wiersze[[i]]$edytujWiersz, {
-      # js$setDisableNonselChildren()
       js$reactToClicksUnderRadios()
       ustaw_tab_wyszarzen()
     }, priority = 2)
