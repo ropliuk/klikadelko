@@ -25,8 +25,12 @@ source('pom.R')
 #     })
 
 # Define UI for application that draws a histogram
+
 shinyUI(fluidPage(
-  shinyjs::useShinyjs(),
+  useShinyjs(),
+  tags$head(tags$script(src="disable.js")),
+  extendShinyjs(script="www/shinycalls.js"),
+
   includeCSS('styles.css'),
 #   tags$head(tags$script(HTML(JScode))),
 
