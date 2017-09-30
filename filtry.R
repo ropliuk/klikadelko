@@ -134,6 +134,10 @@ filtry = list(
       dane$rok_gm >= as.numeric(kontekst$p.rok.min.g) &
       dane$rok_gm <= as.numeric(kontekst$p.rok.max.g)
   },
+  gl.rok.g = function(dane, kontekst){
+    (!is.na(dane$rok_gm)) &
+      dane$rok_gm == as.numeric(kontekst$p.rok_wybrany)
+  },
   woj.s = function(dane, kontekst) {
     (!is.na(dane$teryt_s)) &
       dane$teryt_s %/% 200000 == as.numeric(kontekst$p.woj.s)

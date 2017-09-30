@@ -44,7 +44,7 @@ opis.dla.warunkow = function(warunki, licznosc) {
   }
 }
 
-lacz_warunki = function(wiersz, wierszWspolny) {
+lacz_warunki = function(wiersz, wierszWspolny, input) {
   warunki = list()
   lapply(
     c(
@@ -65,6 +65,9 @@ lacz_warunki = function(wiersz, wierszWspolny) {
       }
     }
   })
+  print(input$f.rok)
+  warunki$f.rok = input$f.rok
+  warunki$p.rok_wybrany = input$p.rok_wybrany
   warunki
 }
 

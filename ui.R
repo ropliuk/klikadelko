@@ -47,6 +47,25 @@ shinyUI(fluidPage(
           ),
           column(4, passwordInput('haslo', 'HASŁO:'))
         ),
+        radioButtons('f.rok',
+          label = 'rok zakończenia gimnazjum',
+          choiceNames = list(
+            'wszystkie',
+            selectInput('p.rok_wybrany', '',
+              c(
+                '2011'= 2011,
+                '2012' = 2012,
+                '2013' = 2013
+              ),
+              width="120px"
+            )
+          ),
+          choiceValues = list(
+            'ogol',
+            'gl.rok.g'
+          ),
+          selected = 'ogol'
+        ),
         fluidRow(
           h4('Typ wykresu:'),
           actionButton('liniowy', 'Liniowy (XY)'),

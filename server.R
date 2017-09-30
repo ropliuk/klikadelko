@@ -62,7 +62,7 @@ shinyServer(function(input, output, session) {
 #   })
 
   wyznacz_warunki = function(nr_wiersza) {
-    lacz_warunki(wiersze[[nr_wiersza]], wierszWspolny)
+    lacz_warunki(wiersze[[nr_wiersza]], wierszWspolny, input)
   }
 
   dodaj_serie = function(wykres, nr_wiersza, ktory_wykres) {
