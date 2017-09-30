@@ -6,14 +6,6 @@
 #     ),
 list_pom2 = list();
 
-disabled_if = function(element, czy) {
-  if (czy) {
-    disabled(element)
-  } else {
-    element
-  }
-}
-
 ui.mw = function(ns, typ) {
   radioButtons(ns(paste0('f.mw.', typ)),
     label = 'Miasto / wieś',
