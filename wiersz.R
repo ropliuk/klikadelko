@@ -112,6 +112,7 @@ koloruj = function(tekst, kolor) {
 wierszModul = function(input, output, session, id, numer, fun_wyszarzen) {
   observeEvent(input$edytujWiersz, {
     toggleModal(session, "modalnew", toggle = "open")
+    js$otwartoModalWiersza(id)
     for (nazwa in lista.filtrow(input)) {
       if (fun_wyszarzen(nazwa)) {
         shinyjs::disable(nazwa)

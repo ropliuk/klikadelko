@@ -65,7 +65,7 @@ lacz_warunki = function(wiersz, wierszWspolny, input) {
       }
     }
   })
-  print(input$f.rok)
+  # print(input$f.rok)
   warunki$f.rok = input$f.rok
   warunki$p.rok_wybrany = input$p.rok_wybrany
   warunki

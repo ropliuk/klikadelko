@@ -15,6 +15,7 @@ source('panel.R')
 source('kolory.R')
 source('osie.R')
 source('system.R')
+source('r_js.R')
 
 #   skala = c(0,100,200,500,1000,2000,5000,10000,20000,50000,100000,200000,500000,1000000,2000000)
 
@@ -32,13 +33,17 @@ shinyServer(function(input, output, session) {
   zarzadzajPanelem(input, output)
   rzeczyWPanelu(input, output, stan)
 
-  observeEvent(input$przelicz, {
-    czas = proc.time()[['elapsed']]
-    stan$wykresy = wykresy()
-    stan$pam_uzyta = pam_uzyta()
-    stan$pam_cala = pam_cala()
-    stan$ost_czas = proc.time()[['elapsed']] - czas
+  odbierajZdarzenie(input, session, 'przelicz', function() {
+    przelicz()
   })
+
+  # observeEvent(input$przelicz, {
+  #   czas = proc.time()[['elapsed']]
+  #   stan$wykresy = wykresy()
+  #   stan$pam_uzyta = pam_uzyta()
+  #   stan$pam_cala = pam_cala()
+  #   stan$ost_czas = proc.time()[['elapsed']] - czas
+  # })
 
   res = rysujWiersze(input, output)
   czyWiersze = res$czyWiersze
@@ -60,6 +65,15 @@ shinyServer(function(input, output, session) {
 #   output$text1 <- renderText({
 #     paste('Wielkosc miejscowosci: od', input$ludnosc[1], 'do', input$ludnosc[2])
 #   })
+
+  przelicz = function() {
+    print("Przelicz")
+    czas = proc.time()[['elapsed']]
+    stan$wykresy = wykresy()
+    stan$pam_uzyta = pam_uzyta()
+    stan$pam_cala = pam_cala()
+    stan$ost_czas = proc.time()[['elapsed']] - czas
+  }
 
   wyznacz_warunki = function(nr_wiersza) {
     lacz_warunki(wiersze[[nr_wiersza]], wierszWspolny, input)

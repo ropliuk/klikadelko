@@ -28,7 +28,10 @@ source('pom.R')
 
 shinyUI(fluidPage(
   useShinyjs(),
-  tags$head(tags$script(src="disable.js")),
+  tags$head(
+    tags$script(src="r-js.js"),
+    tags$script(src="disable.js")
+  ),
   extendShinyjs(script="www/shinycalls.js"),
 
   includeCSS('styles.css'),
