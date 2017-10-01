@@ -1,9 +1,5 @@
 otwarteWiersze = {}
 
-shinyjs.init = function() {
-  noweZdarzenie('przelicz');
-}
-
 shinyjs.otwartoModalWiersza = function(params) {
   nazwa = params[0]
 

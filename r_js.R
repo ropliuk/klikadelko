@@ -4,8 +4,7 @@ odbierajZdarzenie = function(input, session, nazwa, obsluga) {
   pierwszyRaz = TRUE
 
   observe({
-    nowa.wartosc = input[[klucz]]
-    session$sendCustomMessage(type = paste0('on_', nazwa), nowa.wartosc)
+    nowa.wartosc = input[[klucz]][1]
     if (pierwszyRaz) {
       pierwszyRaz <<- FALSE
     } else {
