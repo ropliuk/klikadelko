@@ -21,8 +21,7 @@ source('r_js.R')
 
 # **** WCZYTANIE DANYCH ****
 dane = data.frame()
-dane = laduj('../gimsp7.RData')
-# load('../gimsp7.RData') # ---> dane
+load('../gimsp7.RData') # ---> dane
 
 shinyServer(function(input, output, session) {
   session$allowReconnect(TRUE)
@@ -42,13 +41,9 @@ shinyServer(function(input, output, session) {
     przelicz()
   })
 
-  # observeEvent(input$przelicz, {
-  #   czas = proc.time()[['elapsed']]
-  #   stan$wykresy = wykresy()
-  #   stan$pam_uzyta = pam_uzyta()
-  #   stan$pam_cala = pam_cala()
-  #   stan$ost_czas = proc.time()[['elapsed']] - czas
-  # })
+  observeEvent(input$przelicz, {
+    przelicz()
+  })
 
   res = rysujWiersze(input, output)
   czyWiersze = res$czyWiersze
