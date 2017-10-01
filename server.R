@@ -21,7 +21,8 @@ source('r_js.R')
 
 # **** WCZYTANIE DANYCH ****
 dane = data.frame()
-load('../gimsp7.RData') # ---> dane
+dane = laduj('../gimsp7.RData')
+# load('../gimsp7.RData') # ---> dane
 
 shinyServer(function(input, output, session) {
   session$allowReconnect(TRUE)
