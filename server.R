@@ -19,6 +19,10 @@ source('r_js.R')
 
 #   skala = c(0,100,200,500,1000,2000,5000,10000,20000,50000,100000,200000,500000,1000000,2000000)
 
+# **** WCZYTANIE DANYCH ****
+dane = data.frame()
+load('../gimsp7.RData') # ---> dane
+
 shinyServer(function(input, output, session) {
   session$allowReconnect(TRUE)
 
@@ -50,10 +54,6 @@ shinyServer(function(input, output, session) {
   wiersze = res$wiersze
   ktoreProbkowac = res$ktoreProbkowac
   wierszWspolny = res$wierszWspolny
-
-  # **** WCZYTANIE DANYCH ****
-  dane = data.frame()
-  load('../gimsp7.RData') # ---> dane
 
   dane_glob = function() {
     dane %>%
