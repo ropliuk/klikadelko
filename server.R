@@ -45,6 +45,11 @@ shinyServer(function(input, output, session) {
     przelicz()
   })
 
+  observeEvent(input$osie, {
+    osie()
+    js$otwartoModalWiersza('', 'modalOsi')
+  })
+
   res = rysujWiersze(input, output)
   czyWiersze = res$czyWiersze
   wiersze = res$wiersze
@@ -61,6 +66,11 @@ shinyServer(function(input, output, session) {
 #   output$text1 <- renderText({
 #     paste('Wielkosc miejscowosci: od', input$ludnosc[1], 'do', input$ludnosc[2])
 #   })
+
+  osie = function(){
+    print("Osie")
+    toggleModal(session, "modalOsi", toggle = "open")
+  }
 
   przelicz = function() {
     print("Przelicz")

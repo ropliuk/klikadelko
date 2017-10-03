@@ -32,7 +32,7 @@ shinyUI(fluidPage(
     tags$script(src="r-js.js"),
     tags$script(src="disable.js")
   ),
-  extendShinyjs(script="www/shinycalls.js"),
+  extendShinyjs(script="www/shinycalls.js", functions = c("otwartoModalWiersza")),
 
   includeCSS('styles.css'),
 #   tags$head(tags$script(HTML(JScode))),
@@ -41,6 +41,14 @@ shinyUI(fluidPage(
 #   titlePanel('Hello Shiny!'),
 
   # Sidebar with a slider input for the number of bins
+
+  bsModal("modalOsi", "Edytuj warunki wiersza", "BUTnew", size = "large",
+  fluidRow(
+    column(6, os_UI('Y', list(), 'os.wynik.gm')),
+    column(6, os_UI('X', list('os.licznosc'), 'os.wynik.s'))
+    )
+  ),
+
   sidebarLayout(
     conditionalPanel('output.parametry',
       sidebarPanel(
@@ -79,16 +87,19 @@ shinyUI(fluidPage(
           actionButton('slupkowy', 'Słupkowy (Y)')
         ),
         # actionButton('filtryWspolne', 'Dodaj wspolne filtry', width='100%'),
-        fluidRow(
-          column(6, os_UI('Y', list(), 'os.wynik.gm')),
-          column(6, os_UI('X', list('os.licznosc'), 'os.wynik.s'))
-        ),
+        # fluidRow(
+        #   column(6, os_UI('Y', list(), 'os.wynik.gm')),
+        #   column(6, os_UI('X', list('os.licznosc'), 'os.wynik.s'))
+        # ),
         # sliderInput('ludnosc',
         #             'Wielkosc miejscowosci:',
         #             min = 0,
         #             max = 2000000,
         #             value = c(0, 2000000)),
 #         textOutput('text1'),
+        fluidRow(
+            column(12, actionButton('osie', tags$b('Osie'), width='100%'))
+        ),
         fluidRow(
           column(12, actionButton('przelicz', tags$b('Przelicz'), width='100%'))
         ),
