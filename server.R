@@ -50,6 +50,12 @@ shinyServer(function(input, output, session) {
     js$otwartoModalWiersza('', 'modalOsi')
   })
 
+  observe({
+    input$f.rok
+    input$p.rok_wybrany
+    isolate(przelicz())
+  })
+
   res = rysujWiersze(input, output)
   czyWiersze = res$czyWiersze
   wiersze = res$wiersze
