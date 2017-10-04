@@ -1,6 +1,7 @@
 library(shiny)
 library(plotly)
 library(shinyjs)
+library(shinyBS)
 
 source('osie.R')
 source('pom.R')
