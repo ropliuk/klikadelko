@@ -66,7 +66,7 @@ shinyUI(fluidPage(
         radioButtons('f.rok',
           label = 'rok zakończenia gimnazjum',
           choiceNames = list(
-            'wszystkie',
+            # 'wszystkie',
             selectInput('p.rok_wybrany', '',
               c(
                 '2011'= 2011,
@@ -77,10 +77,10 @@ shinyUI(fluidPage(
             )
           ),
           choiceValues = list(
-            'ogol',
+            # 'ogol',
             'gl.rok.g'
           ),
-          selected = 'ogol'
+          selected = 'gl.rok.g'
         ),
         fluidRow(
           h4('Typ wykresu:'),
