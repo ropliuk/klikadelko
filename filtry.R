@@ -1,4 +1,3 @@
-
 SLOWNIK_PARAMETROW = list(
   f.rejonowosc = list('p.wedr.od.procent'),
   f.w.szk.s = list('p.w.szk.min.s', 'p.w.szk.max.s'),
@@ -10,6 +9,7 @@ SLOWNIK_PARAMETROW = list(
   f.wynik.s = list('p.wynik.min.s', 'p.wynik.max.s'),
   f.rok.s = list('p.rok.min.s', 'p.rok.max.s'),
   f.rok.g = list('p.rok.min.g', 'p.rok.max.g'),
+  f.gl.rok.g = list('p.rok.g'),
   f.woj.s = list('p.woj.s', 'p.oke.s'),
   f.woj.g = list('p.woj.g', 'p.oke.g')
 )
@@ -130,13 +130,19 @@ filtry = list(
       dane$rok_s <= as.numeric(kontekst$p.rok.max.s)
   },
   rok.g = function(dane, kontekst) {
-    (!is.na(dane$rok_gm)) &
-      dane$rok_gm >= as.numeric(kontekst$p.rok.min.g) &
-      dane$rok_gm <= as.numeric(kontekst$p.rok.max.g)
-  },
-  gl.rok.g = function(dane, kontekst){
-    (!is.na(dane$rok_gm)) &
-      dane$rok_gm == as.numeric(kontekst$p.rok_wybrany)
+    wynik = c(TRUE)
+    if (!is.null(kontekst$p.rok.g)) {
+      wynik = wynik &
+        (!is.na(dane$rok_gm)) &
+        dane$rok_gm == as.numeric(kontekst$p.rok.g)
+    }
+    if (!is.null(kontekst$p.rok.min.g)) {
+      wynik = wynik &
+        (!is.na(dane$rok_gm)) &
+        dane$rok_gm >= as.numeric(kontekst$p.rok.min.g) &
+        dane$rok_gm <= as.numeric(kontekst$p.rok.max.g)
+    }
+    wynik
   },
   woj.s = function(dane, kontekst) {
     (!is.na(dane$teryt_s)) &

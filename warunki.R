@@ -44,31 +44,30 @@ opis.dla.warunkow = function(warunki, licznosc) {
   }
 }
 
-lacz_warunki = function(wiersz, wierszWspolny, input) {
-  warunki = list()
-  lapply(
-    c(
-      lista.filtrow(wiersz),
-      lista.parametrow(wiersz)
-    ),
-    function(nazwa) {
-      warunki[[nazwa]] <<- wiersz[[nazwa]]
-    }
-  )
-  lapply(lista.filtrow(wierszWspolny), function(nazwa) {
-    if (wierszWspolny[[nazwa]] != 'ogol') {
-      warunki[[nazwa]] <<- wierszWspolny[[nazwa]]
+przepisz_warunki_jesli = function(dokad, skad, warunek_na_filtr) {
+  lapply(lista.filtrow(skad), function(nazwa) {
+    if (warunek_na_filtr(nazwa)) {
+      dokad[[nazwa]] <<- skad[[nazwa]]
       if (!is.null(SLOWNIK_PARAMETROW[[nazwa]])) {
         lapply(SLOWNIK_PARAMETROW[[nazwa]], function(p) {
-          warunki[[p]] <<- wierszWspolny[[p]]
+          dokad[[p]] <<- skad[[p]]
         })
       }
     }
   })
-  # print(input$f.rok)
-  warunki$f.rok = input$f.rok
-  warunki$p.rok_wybrany = input$p.rok_wybrany
-  warunki
+  dokad
+}
+
+przepisz_warunki = function(dokad, skad) {
+  dokad %>% przepisz_warunki_jesli(skad, function(nazwa) { TRUE })
+}
+
+lacz_warunki = function(wiersz, wierszWspolny, input) {
+  list() %>%
+    przepisz_warunki(wiersz) %>%
+    przepisz_warunki(input) %>%
+    przepisz_warunki_jesli(wierszWspolny,
+      function(nazwa) { wierszWspolny[[nazwa]] != 'ogol' })
 }
 
 dane_dla_wiersza = function(dane, warunki, ktory_wykres) {
