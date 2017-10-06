@@ -21,7 +21,7 @@ source('r_js.R')
 
 # **** WCZYTANIE DANYCH ****
 dane = data.frame()
-load('../gimsp7.RData') # ---> dane
+load('../sciezki1.RData') # ---> dane
 
 shinyServer(function(input, output, session) {
   session$allowReconnect(TRUE)

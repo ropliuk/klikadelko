@@ -17,19 +17,144 @@ SLOWNIK_PARAMETROW = list(
 filtry = list(
   ogol = function(dane, kontekst) { TRUE },
 
-  miasto.s = function(dane, kontekst) { !is.na(dane$wies_s) & dane$wies_s == 0 },
-  wies.s = function(dane, kontekst) { !is.na(dane$wies_s) & dane$wies_s == 1 },
-  miasto.g = function(dane, kontekst) { !is.na(dane$wies_gm) & dane$wies_gm == 0 },
-  wies.g = function(dane, kontekst) { !is.na(dane$wies_gm) & dane$wies_gm == 1 },
+  # CECHY SZKOLY
 
-  publ.s = function(dane, kontekst) { !is.na(dane$publiczna_s) & dane$publiczna_s == 1 },
-  pryw.s = function(dane, kontekst) { !is.na(dane$publiczna_s) & dane$publiczna_s == 0 },
-  publ.g = function(dane, kontekst) { !is.na(dane$publiczna_gm) & dane$publiczna_gm == 1 },
-  pryw.g = function(dane, kontekst) { !is.na(dane$publiczna_gm) & dane$publiczna_gm == 0 },
+  miasto.s = function(dane, kontekst) { !is.na(dane$wies_sp) & dane$wies_sp == 0 },
+  wies.s = function(dane, kontekst) { !is.na(dane$wies_sp) & dane$wies_sp == 1 },
+  miasto.g = function(dane, kontekst) { !is.na(dane$wies_gim) & dane$wies_gim == 0 },
+  wies.g = function(dane, kontekst) { !is.na(dane$wies_gim) & dane$wies_gim == 1 },
 
-  starsi =  function(dane, kontekst) { !is.na(dane$rok_s) & dane$rok_gm - dane$rok_s > 3 },
-  o.czasie = function(dane, kontekst) { !is.na(dane$rok_s) & dane$rok_gm - dane$rok_s == 3 },
-  mlodsi = function(dane, kontekst) { !is.na(dane$rok_s) & dane$rok_gm - dane$rok_s < 3 },
+  publ.s = function(dane, kontekst) { !is.na(dane$publiczna_sp) & dane$publiczna_sp == 1 },
+  pryw.s = function(dane, kontekst) { !is.na(dane$publiczna_sp) & dane$publiczna_sp == 0 },
+  publ.g = function(dane, kontekst) { !is.na(dane$publiczna_gim) & dane$publiczna_gim == 1 },
+  pryw.g = function(dane, kontekst) { !is.na(dane$publiczna_gim) & dane$publiczna_gim == 0 },
+
+  w.szk.s = function(dane, kontekst) {
+    dane_wielkosc = dane %>%
+      group_by(id_szkoly_sp) %>%
+      mutate(wielkosc_sp = n())
+
+    (!is.na(dane$id_szkoly_sp)) &
+      dane_wielkosc$wielkosc_sp >= as.numeric(kontekst$p.w.szk.min.s) &
+      dane_wielkosc$wielkosc_sp <= as.numeric(kontekst$p.w.szk.max.s)
+  },
+  w.szk.g = function(dane, kontekst) {
+    dane_wielkosc = dane %>%
+      group_by(id_szkoly_gim) %>%
+      mutate(wielkosc_gim = n())
+
+    (!is.na(dane$id_szkoly_gim)) &
+      dane_wielkosc$wielkosc_gim >= as.numeric(kontekst$p.w.szk.min.g) &
+      dane_wielkosc$wielkosc_gim <= as.numeric(kontekst$p.w.szk.max.g)
+  },
+
+  ludnosc.s = function(dane, kontekst) {
+    (!is.na(dane$ludnosc_sp)) &
+      dane$ludnosc_sp >= as.numeric(kontekst$p.ludnosc.min.s) * 1000 &
+      dane$ludnosc_sp <= as.numeric(kontekst$p.ludnosc.max.s) * 1000
+  },
+  ludnosc.g = function(dane, kontekst) {
+    (!is.na(dane$ludnosc_gim)) &
+      dane$ludnosc_gim >= as.numeric(kontekst$p.ludnosc.min.g) * 1000 &
+      dane$ludnosc_gim <= as.numeric(kontekst$p.ludnosc.max.g) * 1000
+  },
+
+  wynik.s.szkoly.s = function(dane, kontekst) {
+    dane_wynik_s = dane %>%
+      group_by(id_szkoly_sp) %>%
+      mutate(sr_wynik_s = mean(wynik_s, na.rm=TRUE))
+
+    (!is.na(dane$id_szkoly_sp)) &
+      (!is.na(dane_wynik_s$sr_wynik_s)) &
+      dane_wynik_s$sr_wynik_s >= as.numeric(kontekst$p.wynik.s.szkoly.min.s) &
+      dane_wynik_s$sr_wynik_s <= as.numeric(kontekst$p.wynik.s.szkoly.max.s)
+  },
+  wynik.s.szkoly.g = function(dane, kontekst) {
+    dane_wynik_s = dane %>%
+      group_by(id_szkoly_gim) %>%
+      mutate(sr_wynik_s = mean(wynik_s, na.rm=TRUE))
+
+    (!is.na(dane$id_szkoly_gim)) &
+      (!is.na(dane_wynik_s$sr_wynik_s)) &
+      dane_wynik_s$sr_wynik_s >= as.numeric(kontekst$p.wynik.s.szkoly.min.g) &
+      dane_wynik_s$sr_wynik_s <= as.numeric(kontekst$p.wynik.s.szkoly.max.g)
+  },
+
+  woj.s = function(dane, kontekst) {
+    (!is.na(dane$teryt_sp)) &
+      dane$teryt_sp %/% 200000 == as.numeric(kontekst$p.woj.s)
+  },
+  woj.g = function(dane, kontekst) {
+    (!is.na(dane$teryt_gim)) &
+      dane$teryt_gim %/% 200000 == as.numeric(kontekst$p.woj.g)
+  },
+
+  oke.s = function(dane, kontekst) {
+    (!is.na(dane$teryt_sp)) &
+      unlist(strsplit(kontekst$p.oke.s, ''))[dane$teryt_sp %/% 200000] == '1'
+    #  (dane$teryt_s %/% 100000) %in% kontekst$oke.s
+  },
+  oke.gm = function(dane, kontekst) {
+    (!is.na(dane$teryt_gim)) &
+      unlist(strsplit(kontekst$p.oke.g, ''))[dane$teryt_gim %/% 200000] == '1'
+    #  (dane$teryt_gm %/% 100000) %in% kontekst$oke.gm
+  },
+
+  # CECHY UCZNIA W SZKOLE
+
+  rok.s = function(dane, kontekst) {
+    (!is.na(dane$rok_sp)) &
+      dane$rok_sp >= as.numeric(kontekst$p.rok.min.s) &
+      dane$rok_sp <= as.numeric(kontekst$p.rok.max.s)
+  },
+  rok.g = function(dane, kontekst) {
+    wynik = c(TRUE)
+    if (!is.null(kontekst$p.rok.g)) {
+      wynik = wynik &
+        (!is.na(dane$rok_gim)) &
+        dane$rok_gim == as.numeric(kontekst$p.rok.g)
+    }
+    if (!is.null(kontekst$p.rok.min.g)) {
+      wynik = wynik &
+        (!is.na(dane$rok_gim)) &
+        dane$rok_gim >= as.numeric(kontekst$p.rok.min.g) &
+        dane$rok_gim <= as.numeric(kontekst$p.rok.max.g)
+    }
+    wynik
+  },
+  rok.m = function(dane, kontekst) {
+    #TODO
+    dane
+  },
+
+  zm.pow = function(dane, kontekst) {
+    (!is.na(dane$teryt_sp)) &
+      (!is.na(dane$teryt_gim)) &
+      dane$teryt_sp %/% 1000 != dane$teryt_gim %/% 1000
+  },
+  brak.zm.pow = function(dane, kontekst) {
+    (!is.na(dane$teryt_sp)) &
+      (!is.na(dane$teryt_gim)) &
+      dane$teryt_sp %/% 1000 == dane$teryt_gim %/% 1000
+  },
+
+  starsi =  function(dane, kontekst) { !is.na(dane$rok_sp) & !is.na(dane$rok_gim) & dane$rok_gim - dane$rok_sp > 3 },
+  o.czasie = function(dane, kontekst) { !is.na(dane$rok_sp) & !is.na(dane$rok_gim) & dane$rok_gim - dane$rok_sp == 3 },
+  mlodsi = function(dane, kontekst) { !is.na(dane$rok_sp) & !is.na(dane$rok_gim) & dane$rok_gim - dane$rok_sp < 3 },
+
+  wedrowniejsi = function(dane, kontekst) {
+    dane2 = dane %>%
+      group_by(id_szkoly_sp) %>%
+      mutate(l_kol_sp = n()) %>%
+      group_by(id_szkoly_sp, id_szkoly_gim) %>%
+      mutate(wsp_przech = n()/l_kol_sp)
+
+    !is.na(dane$id_szkoly_sp) &
+      !is.na(dane$id_szkoly_gim) &
+      dane2$wsp_przech < 1 - as.numeric(kontekst$p.wedr.od.procent)/100
+  },
+
+  # CECHY UCZNIA NA EGZAMINIE
 
   dysl.s = function(dane, kontekst) { !is.na(dane$dysleksja_s) & dane$dysleksja_s == 1 },
   brak.dysl.s = function(dane, kontekst) { !is.na(dane$dysleksja_s) & dane$dysleksja_s == 0 },
@@ -44,127 +169,10 @@ filtry = list(
   nie.laur.gm = function(dane, kontekst){ !is.na(dane$laureat_gm) & dane$laureat_gm == 0},
   nie.laur.gh = function(dane, kontekst){ !is.na(dane$laureat_gh) & dane$laureat_gh == 0},
 
-  wedrowniejsi = function(dane, kontekst) {
-    dane2 = dane %>%
-      group_by(id_szkoly_s) %>%
-      mutate(l_kol_s = n()) %>%
-      group_by(id_szkoly_s, id_szkoly_gm) %>%
-      mutate(wsp_przech = n()/l_kol_s)
-
-    !is.na(dane$id_szkoly_s) &
-      !is.na(dane$id_szkoly_gm) &
-      dane2$wsp_przech < 1 - as.numeric(kontekst$p.wedr.od.procent)/100
-  },
-
-  w.szk.s = function(dane, kontekst) {
-    dane_wielkosc = dane %>%
-      group_by(id_szkoly_s) %>%
-      mutate(wielkosc_s = n())
-
-    (!is.na(dane$id_szkoly_s)) &
-      dane_wielkosc$wielkosc_s >= as.numeric(kontekst$p.w.szk.min.s) &
-      dane_wielkosc$wielkosc_s <= as.numeric(kontekst$p.w.szk.max.s)
-  },
-  w.szk.g = function(dane, kontekst) {
-    dane_wielkosc = dane %>%
-      group_by(id_szkoly_gm) %>%
-      mutate(wielkosc_gm = n())
-
-    (!is.na(dane$id_szkoly_gm)) &
-      dane_wielkosc$wielkosc_gm >= as.numeric(kontekst$p.w.szk.min.g) &
-      dane_wielkosc$wielkosc_gm <= as.numeric(kontekst$p.w.szk.max.g)
-  },
-
-  ludnosc.s = function(dane, kontekst) {
-    (!is.na(dane$ludnosc_s)) &
-      dane$ludnosc_s >= as.numeric(kontekst$p.ludnosc.min.s) * 1000 &
-      dane$ludnosc_s <= as.numeric(kontekst$p.ludnosc.max.s) * 1000
-  },
-  ludnosc.g = function(dane, kontekst) {
-    (!is.na(dane$ludnosc_gm)) &
-      dane$ludnosc_gm >= as.numeric(kontekst$p.ludnosc.min.g) * 1000 &
-      dane$ludnosc_gm <= as.numeric(kontekst$p.ludnosc.max.g) * 1000
-  },
-
-  wynik.s.szkoly.s = function(dane, kontekst) {
-    dane_wynik_s = dane %>%
-      group_by(id_szkoly_s) %>%
-      mutate(sr_wynik_s = mean(wynik_s, na.rm=TRUE))
-
-    (!is.na(dane$id_szkoly_s)) &
-      (!is.na(dane_wynik_s$sr_wynik_s)) &
-      dane_wynik_s$sr_wynik_s >= as.numeric(kontekst$p.wynik.s.szkoly.min.s) &
-      dane_wynik_s$sr_wynik_s <= as.numeric(kontekst$p.wynik.s.szkoly.max.s)
-  },
-  wynik.s.szkoly.g = function(dane, kontekst) {
-    dane_wynik_s = dane %>%
-      group_by(id_szkoly_gm) %>%
-      mutate(sr_wynik_s = mean(wynik_s, na.rm=TRUE))
-
-    (!is.na(dane$id_szkoly_gm)) &
-      (!is.na(dane_wynik_s$sr_wynik_s)) &
-      dane_wynik_s$sr_wynik_s >= as.numeric(kontekst$p.wynik.s.szkoly.min.g) &
-      dane_wynik_s$sr_wynik_s <= as.numeric(kontekst$p.wynik.s.szkoly.max.g)
-  },
-
   wynik.s = function(dane, kontekst) {
     (!is.na(dane$wynik_s)) &
       dane$wynik_s >= as.numeric(kontekst$p.wynik.min.s) &
       dane$wynik_s <= as.numeric(kontekst$p.wynik.max.s)
-  },
-
-  zm.pow = function(dane, kontekst) {
-    (!is.na(dane$teryt_s)) &
-      (!is.na(dane$teryt_gm)) &
-      dane$teryt_s %/% 1000 != dane$teryt_gm %/% 1000
-  },
-  brak.zm.pow = function(dane, kontekst) {
-    (!is.na(dane$teryt_s)) &
-      (!is.na(dane$teryt_gm)) &
-      dane$teryt_s %/% 1000 == dane$teryt_gm %/% 1000
-  },
-
-  rok.s = function(dane, kontekst) {
-    (!is.na(dane$rok_s)) &
-      dane$rok_s >= as.numeric(kontekst$p.rok.min.s) &
-      dane$rok_s <= as.numeric(kontekst$p.rok.max.s)
-  },
-  rok.g = function(dane, kontekst) {
-    wynik = c(TRUE)
-    if (!is.null(kontekst$p.rok.g)) {
-      wynik = wynik &
-        (!is.na(dane$rok_gm)) &
-        dane$rok_gm == as.numeric(kontekst$p.rok.g)
-    }
-    if (!is.null(kontekst$p.rok.min.g)) {
-      wynik = wynik &
-        (!is.na(dane$rok_gm)) &
-        dane$rok_gm >= as.numeric(kontekst$p.rok.min.g) &
-        dane$rok_gm <= as.numeric(kontekst$p.rok.max.g)
-    }
-    wynik
-  },
-  rok.m = function(dane, kontekst) {
-    #TODO
-    dane
-  },
-  woj.s = function(dane, kontekst) {
-    (!is.na(dane$teryt_s)) &
-      dane$teryt_s %/% 200000 == as.numeric(kontekst$p.woj.s)
-  },
-  woj.g = function(dane, kontekst) {
-    (!is.na(dane$teryt_gm)) &
-      dane$teryt_gm %/% 200000 == as.numeric(kontekst$p.woj.g)
-  },
-  oke.s = function(dane, kontekst) {
-    (!is.na(dane$teryt_s)) &
-      unlist(strsplit(kontekst$p.oke.s, ''))[dane$teryt_s %/% 200000] == '1'
-    #  (dane$teryt_s %/% 100000) %in% kontekst$oke.s
-  },
-  oke.gm = function(dane, kontekst) {
-    (!is.na(dane$teryt_gm)) &
-      unlist(strsplit(kontekst$p.oke.g, ''))[dane$teryt_gm %/% 200000] == '1'
-    #  (dane$teryt_gm %/% 100000) %in% kontekst$oke.gm
   }
 )
 
