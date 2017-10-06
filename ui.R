@@ -100,7 +100,17 @@ shinyUI(fluidPage(
         #             value = c(0, 2000000)),
 #         textOutput('text1'),
         fluidRow(
-            column(12, actionButton('osie', tags$b('Osie'), width='100%'))
+          column(6,
+            tags$b("Oś Y:"),
+            textOutput("opis.osi.y")
+          ),
+          column(6,
+            tags$b("Oś X:"),
+            textOutput("opis.osi.x")
+          )
+        ),
+        fluidRow(
+            column(12, actionButton('osie', tags$b('Edytuj osie'), width='100%'))
         ),
         fluidRow(
           column(12, actionButton('przelicz', tags$b('Przelicz'), width='100%'))

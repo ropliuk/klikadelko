@@ -183,6 +183,24 @@ shinyServer(function(input, output, session) {
     stan$wykresy
   })
 
+  output$opis.osi.y = renderText({
+    sprintf("%s (%s)",
+      slownik.odwr(wybory.os.wartosc)[[input$os.wartosc.Y]],
+      slownik.odwr(wybory.os.jednostka)[[input$os.jednostka.Y]]
+    )
+  })
+
+  output$opis.osi.x = renderText({
+    if (stan$rodzaj_wykresu == 'liniowy') {
+      sprintf("%s (%s)",
+        slownik.odwr(wybory.os.wartosc)[[input$os.wartosc.X]],
+        slownik.odwr(wybory.os.jednostka)[[input$os.jednostka.X]]
+      )
+    } else {
+      "(brak)"
+    }
+  })
+
   # output$plot2 = renderPlotly({
   #   wykres_dolny()
   # })

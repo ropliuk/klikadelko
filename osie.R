@@ -1,29 +1,32 @@
 
 source('dane.R')
 
+wybory.os.wartosc = list(
+  'Wynik s' = 'os.wynik.s',
+  'Wynik gh' = 'os.wynik.gh',
+  'Wynik gm' = 'os.wynik.gm',
+  'Wynik gh+gm' = 'os.wynik.gh.gm',
+  'Laureat gh' = 'os.laureat.gh',
+  'Laureat gm' = 'os.laureat.gm',
+  'Liczność' = 'os.licznosc'
+)
+
+wybory.os.jednostka = list(
+  'Punkty' = 'os.pt',
+  'Percentyle' = 'os.perc'
+)
+
 os_UI = function(nazwa_osi, wyjatki, domyslny) {
-  wybory = list(
-    'Wynik s' = 'os.wynik.s',
-    'Wynik gh' = 'os.wynik.gh',
-    'Wynik gm' = 'os.wynik.gm',
-    'Wynik gh+gm' = 'os.wynik.gh.gm',
-    'Laureat gh' = 'os.laureat.gh',
-    'Laureat gm' = 'os.laureat.gm',
-    'Liczność' = 'os.licznosc'
-  )
   tags$div(id = paste0('os.', nazwa_osi),
     h4(paste('Oś', nazwa_osi)),
     radioButtons(paste0('os.wartosc.', nazwa_osi),
       label = 'Wartości',
-      choices = wybory[!(wybory %in% wyjatki)],
+      choices = wybory.os[!(wybory.os %in% wyjatki)],
       selected = domyslny
     ),
     radioButtons(paste0('os.jednostka.', nazwa_osi),
       label = 'Skala',
-      choices = list(
-        'Punkty' = 'os.pt',
-        'Percentyle' = 'os.perc'
-      ),
+      choices = wybory.os.wart,
       selected = 'os.pt'
     )
   )
