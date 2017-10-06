@@ -63,30 +63,57 @@ shinyUI(fluidPage(
           ),
           column(4, passwordInput('haslo', 'HASŁO:'))
         ),
-        radioButtons('f.gl.rok.g',
-          label = 'rok zakończenia gimnazjum',
-          choiceNames = list(
-            # 'wszystkie',
-            selectInput('p.rok.g', '',
-              c(
-                '2013'= 2013,
-                '2014' = 2014,
-                '2015' = 2015,
-                '2016' = 2016
+        fluidRow(
+          column(6,
+            h4('Wybór populacji'),
+            radioButtons('f.gl.rok',
+              label = '',
+              choiceNames = list(
+                # 'wszystkie',
+                selectInput('p.rok.g', 'koniec gim:',
+                  c(
+                    '2013' = 2013,
+                    '2014' = 2014,
+                    '2015' = 2015,
+                    '2016' = 2016
+                  ),
+                  width="100%"
+                ),
+                selectInput('p.rok.m', 'koniec lic:',
+                  c(
+                    '2015' = 2015,
+                    '2016' = 2016
+                  ),
+                  width="100%"
+                )
               ),
-              width="120px"
+              choiceValues = list(
+                # 'ogol',
+                'rok.g',
+                'rok.m'
+              ),
+              selected = 'rok.g'
             )
           ),
-          choiceValues = list(
-            # 'ogol',
-            'rok.g'
-          ),
-          selected = 'rok.g'
-        ),
-        fluidRow(
-          h4('Typ wykresu:'),
-          actionButton('liniowy', 'Liniowy (XY)'),
-          actionButton('slupkowy', 'Słupkowy (Y)')
+          column(6,
+            h4('Typ wykresu:'),
+            fluidRow(
+              actionButton('liniowy', 'Liniowy (XY)', width='49%'),
+              actionButton('slupkowy', 'Słupkowy (Y)', width='49%')
+            ),
+            span("a", style="color:white"),
+            fluidRow(
+              column(3, tags$b("Oś Y:")),
+              column(9, textOutput("opis.osi.y"))
+            ),
+            fluidRow(
+              column(3, tags$b("Oś X:")),
+              column(9, textOutput("opis.osi.x"))
+            ),
+            fluidRow(
+              actionButton('osie', tags$b('Edytuj osie'), width='100%')
+            )
+          )
         ),
         # actionButton('filtryWspolne', 'Dodaj wspolne filtry', width='100%'),
         # fluidRow(
@@ -99,19 +126,6 @@ shinyUI(fluidPage(
         #             max = 2000000,
         #             value = c(0, 2000000)),
 #         textOutput('text1'),
-        fluidRow(
-          column(6,
-            tags$b("Oś Y:"),
-            textOutput("opis.osi.y")
-          ),
-          column(6,
-            tags$b("Oś X:"),
-            textOutput("opis.osi.x")
-          )
-        ),
-        fluidRow(
-            column(12, actionButton('osie', tags$b('Edytuj osie'), width='100%'))
-        ),
         fluidRow(
           column(12, actionButton('przelicz', tags$b('Przelicz'), width='100%'))
         ),

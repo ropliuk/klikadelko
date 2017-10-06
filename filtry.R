@@ -9,7 +9,7 @@ SLOWNIK_PARAMETROW = list(
   f.wynik.s = list('p.wynik.min.s', 'p.wynik.max.s'),
   f.rok.s = list('p.rok.min.s', 'p.rok.max.s'),
   f.rok.g = list('p.rok.min.g', 'p.rok.max.g'),
-  f.gl.rok.g = list('p.rok.g'),
+  f.gl.rok = list('p.rok.g', 'p.rok.m'),
   f.woj.s = list('p.woj.s', 'p.oke.s'),
   f.woj.g = list('p.woj.g', 'p.oke.g')
 )
@@ -143,6 +143,10 @@ filtry = list(
         dane$rok_gm <= as.numeric(kontekst$p.rok.max.g)
     }
     wynik
+  },
+  rok.m = function(dane, kontekst) {
+    #TODO
+    dane
   },
   woj.s = function(dane, kontekst) {
     (!is.na(dane$teryt_s)) &

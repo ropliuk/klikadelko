@@ -51,8 +51,9 @@ shinyServer(function(input, output, session) {
   })
 
   observe({
-    input$f.gl.rok.g
+    input$f.gl.rok
     input$p.rok.g
+    input$p.rok.m
     isolate(przelicz())
   })
 
