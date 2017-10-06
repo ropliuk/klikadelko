@@ -21,12 +21,12 @@ os_UI = function(nazwa_osi, wyjatki, domyslny) {
     h4(paste('Oś', nazwa_osi)),
     radioButtons(paste0('os.wartosc.', nazwa_osi),
       label = 'Wartości',
-      choices = wybory.os[!(wybory.os %in% wyjatki)],
+      choices = wybory.os.wartosc[!(wybory.os.wartosc %in% wyjatki)],
       selected = domyslny
     ),
     radioButtons(paste0('os.jednostka.', nazwa_osi),
       label = 'Skala',
-      choices = wybory.os.wart,
+      choices = wybory.os.jednostka,
       selected = 'os.pt'
     )
   )
