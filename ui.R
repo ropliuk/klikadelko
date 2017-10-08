@@ -43,8 +43,15 @@ shinyUI(fluidPage(
 
   # Sidebar with a slider input for the number of bins
 
-  bsModal("modalOsi", "Edytuj warunki wiersza", "BUTnew", size = "large",
+  bsModal("modalOsi", "Edytuj warunki osi", "BUTnew", size = "large",
   fluidRow(
+    h4('Typ wykresu:'),
+      fluidRow(
+        span("aaa", style="color:white"),
+        actionButton('liniowy', 'Liniowy (XY)', width='45%'),
+        actionButton('slupkowy', 'Słupkowy (Y)', width='45%')
+      ),
+      # span("a", style="color:white"),
     column(6, os_UI('Y', list(), 'os.wynik.gm')),
     column(6, os_UI('X', list('os.licznosc'), 'os.wynik.s'))
     )
@@ -94,13 +101,13 @@ shinyUI(fluidPage(
               selected = 'rok.g'
             )
           ),
-          column(6,
-            h4('Typ wykresu:'),
-            fluidRow(
-              actionButton('liniowy', 'Liniowy (XY)', width='49%'),
-              actionButton('slupkowy', 'Słupkowy (Y)', width='49%')
-            ),
-            span("a", style="color:white"),
+           column(6,
+          #   h4('Typ wykresu:'),
+          #   fluidRow(
+          #     actionButton('liniowy', 'Liniowy (XY)', width='49%'),
+          #     actionButton('slupkowy', 'Słupkowy (Y)', width='49%')
+          #   ),
+          #   span("a", style="color:white"),
             fluidRow(
               column(3, tags$b("Oś Y:")),
               column(9, textOutput("opis.osi.y"))

@@ -116,5 +116,5 @@ dodaj_os = function(dane, ktora_os, input) {
 os.dot.matury = function(nazwa) {
   substr(nazwa, nchar(nazwa) - 1, nchar(nazwa)) == '.m' |
     (substr(nazwa, nchar(nazwa) - 3, nchar(nazwa)) %in%
-      c('.mpo', '.mma', '.mja'))  
+      c('.mpo', '.mma', '.mja'))
 }
