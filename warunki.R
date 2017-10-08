@@ -44,6 +44,17 @@ opis.dla.warunkow = function(warunki, licznosc) {
   }
 }
 
+warunki.dot.matury = function(warunki) {
+  for (gr in names(warunki)) {
+    if (czy.filtr(warunki[[gr]])) {
+      if (filtr.dot.matury(warunki[[gr]])) {
+        return(TRUE)
+      }
+    }
+  }
+  FALSE
+}
+
 przepisz_warunki_jesli = function(dokad, skad, warunek_na_filtr) {
   lapply(lista.filtrow(skad), function(nazwa) {
     if (warunek_na_filtr(nazwa)) {

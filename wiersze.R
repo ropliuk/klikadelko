@@ -82,14 +82,6 @@ rysujWiersze = function(input, output) {
     ktoreProbkowac$ktore <<- i
   }
 
-
-#  wierszModul1 = {}
-
-  #function(input, output, session, id, numer) {
-  #  observeEvent(input$edytujWiersz, {
-  #    toggleModal(session, "modalnew", toggle = "open")
-  #  }}
-
   czy_wyszarzyc_wspolne = function(nazwa) {
     czy = FALSE
     lapply(1:WIERSZE, function(i) {
@@ -129,17 +121,6 @@ rysujWiersze = function(input, output) {
     }, priority = 2)
   })
 
-#   filtryWspolne = function() {
-#   #  bsModal("modalnew", "Change name", "BUTnew", size = "large",
-#   #    fluidRow(
-#   #      column(2)
-#   #    )
-#   #  )
-#
-#     callModule(wierszModul1, 'wiersz1', id = 'wiersz1', numer = 1)
-# #    toggleModal(session, "modalnew", toggle = "open")
-#   }
-
   usunWiersz = function(i) {
 
     czyWiersze[[i]]$czy <<- FALSE
@@ -149,10 +130,6 @@ rysujWiersze = function(input, output) {
   observeEvent(input$dodajWiersz, {
     dodajWiersz()
   })
-
-  # observeEvent(input$filtryWspolne, {
-  #   filtryWspolne()
-  # })
 
   lapply(1:WIERSZE, function(i) {
     observeEvent(wiersze[[i]]$usunWiersz, {

@@ -6,8 +6,14 @@ wybory.os.wartosc = list(
   'Wynik gh' = 'os.wynik.gh',
   'Wynik gm' = 'os.wynik.gm',
   'Wynik gh+gm' = 'os.wynik.gh.gm',
+  'Wynik mma' = 'os.wynik.mma',
+  'Wynik mpo' = 'os.wynik.mpo',
+  'Wynik mja' = 'os.wynik.mja',
   'Laureat gh' = 'os.laureat.gh',
   'Laureat gm' = 'os.laureat.gm',
+  'Laureat mpo' = 'os.laureat.mpo',
+  'Laureat mma' = 'os.laureat.mma',
+  'Laureat mja' = 'os.laureat.mja',
   'Liczność' = 'os.licznosc'
 )
 
@@ -46,11 +52,30 @@ os_logika = list(
     dane %>% mutate(os = wynik_gh + wynik_gm)
     # dane %>% mutate(os = (wynik_gh - wynik_gm)^2)
   },
+  os.wynik.mma = function(dane){
+    dane %>% mutate(os = wynik_mma)
+  },
+  os.wynik.mpo = function(dane){
+    dane %>% mutate(os = wynik_mpo)
+  },
+  os.wynik.mja = function(dane){
+    dane %>% mutate(os = wynik_mja)
+  },
+
   os.laureat.gh = function(dane) {
     dane %>% mutate(os = ifelse(!is.na(laureat_gh) & laureat_gh, 1, 0))
   },
   os.laureat.gm = function(dane) {
     dane %>% mutate(os = ifelse(!is.na(laureat_gm) & laureat_gm, 1, 0))
+  },
+  os.laureat.mpo = function(dane) {
+    dane %>% mutate(os = ifelse(!is.na(laureat_mpo) & laureat_mpo, 1, 0))
+  },
+  os.laureat.mma = function(dane) {
+    dane %>% mutate(os = ifelse(!is.na(laureat_mma) & laureat_mma, 1, 0))
+  },
+  os.laureat.mja = function(dane) {
+    dane %>% mutate(os = ifelse(!is.na(laureat_mja) & laureat_mja, 1, 0))
   },
 
   os.licznosc = function(dane) {
@@ -86,4 +111,10 @@ dodaj_os = function(dane, ktora_os, input) {
     os_logika[[wartosc]]() %>%
     os_logika[[jednostka]](wartosc) %>%
     sp_rename('os', paste0('os_', ktora_os))
+}
+
+os.dot.matury = function(nazwa) {
+  substr(nazwa, nchar(nazwa) - 1, nchar(nazwa)) == '.m' |
+    (substr(nazwa, nchar(nazwa) - 3, nchar(nazwa)) %in%
+      c('.mpo', '.mma', '.mja'))  
 }

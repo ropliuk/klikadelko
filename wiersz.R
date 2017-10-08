@@ -52,12 +52,31 @@ wierszUI = function(id) {
           tabPanel('Cechy ucznia gimnazjum', fluidRow(
             column(4, ui.rok(ns, 'g')),
             column(3, ui.dysl(ns, 'g')),
-            column(3, ui.rocznik(ns)),
-            column(3, ui.zmiana.powiatu(ns)),
-            column(3, ui.rejonowosc(ns)),
+            column(3, ui.rocznik(ns, 'g')),
+            column(3, ui.zmiana.powiatu(ns, 'g')),
+            column(3, ui.rejonowosc(ns, 'g')),
             column(3, ui.laureat(ns, 'gh')),
             column(3, ui.laureat(ns, 'gm'))
-          ) )
+          )),
+          tabPanel('Cechy szkoły PG', fluidRow(
+            column(2, ui.mw(ns, 'm')),
+            column(2, ui.pp(ns, 'm')),
+            column(4, ui.ludnosc(ns, 'm')),
+            column(4, ui.w.szk(ns, 'm')),
+            column(4, ui.wynik.s.szkoly(ns, 'm')),
+            column(4, ui.wojewodztwo(ns, 'm')),
+            column(6, ui.typ.szkoly.m(ns))
+          )),
+          tabPanel('Cechy ucznia szkoły PG', fluidRow(
+            column(4, ui.rok(ns, 'm')),
+            column(3, ui.dysl(ns, 'm')),
+            column(3, ui.rocznik(ns, 'm')),
+            column(3, ui.zmiana.powiatu(ns, 'm')),
+            column(3, ui.rejonowosc(ns, 'm')),
+            column(3, ui.laureat(ns, 'mpo')),
+            column(3, ui.laureat(ns, 'mma')),
+            column(3, ui.laureat(ns, 'mja'))
+          ))
         )
       )
     )

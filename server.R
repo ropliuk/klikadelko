@@ -21,14 +21,15 @@ source('r_js.R')
 
 # **** WCZYTANIE DANYCH ****
 dane = data.frame()
-load('../sciezki1.RData') # ---> dane
+load('../sciezki3.RData') # ---> dane
 
 shinyServer(function(input, output, session) {
   session$allowReconnect(TRUE)
 
   stan = reactiveValues(
     rodzaj_wykresu = 'liniowy',
-    wykresy = plot_ly(),
+    wykres_gl = plot_ly(),
+    wykresy_dolne = list(),
     pam_uzyta = pam_uzyta(),
     pam_cala = pam_cala(),
     ost_czas = 0
@@ -66,8 +67,7 @@ shinyServer(function(input, output, session) {
   dane_glob = function() {
     dane %>%
       dodaj_os('X', input) %>%
-      dodaj_os('Y', input) %>%
-      drop_na(os_Y)
+      dodaj_os('Y', input)
   }
 
 #   output$text1 <- renderText({
@@ -82,6 +82,8 @@ shinyServer(function(input, output, session) {
   przelicz = function() {
     print("Przelicz")
     czas = proc.time()[['elapsed']]
+    stan$wykres_gl = wykres_gl()
+    stan$wykresy_dolne = wykresy_dolne()
     stan$wykresy = wykresy()
     stan$pam_uzyta = pam_uzyta()
     stan$pam_cala = pam_cala()
@@ -96,6 +98,7 @@ shinyServer(function(input, output, session) {
     warunki = wyznacz_warunki(nr_wiersza)
 
     dane_serii = dane_glob() %>%
+      drop_na(os_Y) %>%
       dane_dla_wiersza(warunki, ktory_wykres)
     dane_agr = dane_serii %>%
       os_Y_agreguj(input$os.wartosc.Y)
@@ -136,23 +139,13 @@ shinyServer(function(input, output, session) {
     wykres
   }
 
-  # gdzie_kursor = function() {
-  #   # Read in hover data
-  #   eventdata <- event_data("plotly_hover", source = "source")
-  #
-  #   # Get point number
-  #   list(
-  #     point = as.numeric(eventdata$pointNumber)[1],
-  #     curve = as.numeric(eventdata$curveNumber)[1]
-  #   )
-  # }
-
   wykres_dolny = function() {
     # kursor = gdzie_kursor()
     nr_wiersza = ktoreProbkowac$ktore
     warunki = wyznacz_warunki(nr_wiersza)
 
     wielkosci_probek = dane_glob() %>%
+      drop_na(os_Y) %>%
       dane_dla_wiersza(warunki, 'liniowy') %>%
       summarize(liczba_uczniow = n())
 
@@ -166,15 +159,59 @@ shinyServer(function(input, output, session) {
     wykres
   }
 
+  wykres_dolny2 = function() {
+    # kursor = gdzie_kursor()
+    nr_wiersza = ktoreProbkowac$ktore
+    warunki = wyznacz_warunki(nr_wiersza)
+
+    if (os.dot.matury(input$os.wartosc.X) |
+      (!os.dot.matury(input$os.wartosc.Y)) |
+      warunki.dot.matury(warunki)
+    ) {
+      NULL
+    } else {
+      procenty_bez_matury = dane_glob() %>%
+        dane_dla_wiersza(warunki, 'liniowy') %>%
+        summarize(liczba_uczniow = mean(is.na(wynik_mma)))
+
+      # procent_probek = wielkosci_probek / summarize(w2, liczba_uczniow = n())
+
+        # dane_dla_wiersza(warunki, 'liniowy'))$wynik_mma) %>%
+        # wielkosci_probek = is.na((dane_glob() %>%
+        # summarize(liczba_uczniow = n())
+
+      wykres = plot_ly(procenty_bez_matury, type='bar') %>%
+        add_trace(
+          x = ~os_X,
+          y = ~liczba_uczniow,
+          name = opis.dla.warunkow(warunki, NULL),
+          marker = list(color = kolorWykres(nr_wiersza)),
+          showlegend = FALSE)
+      wykres
+    }
+  }
+
+  wykresy_dolne = function() {
+    list(wykres_dolny(), wykres_dolny2())
+  }
+
+  observe({
+    ktoreProbkowac$ktore
+    stan$wykresy_dolne = isolate(wykresy_dolne())
+    stan$wykresy = isolate(wykresy())
+  })
+
   wykresy = function() {
     if (
       (input$haslo == 'okelomza') |
       (session$clientData$url_hostname == '127.0.0.1')
     ) {
-      lista_wyk = list(wykres_gl())
-      if (stan$rodzaj_wykresu == 'liniowy')
-        lista_wyk[[2]] = wykres_dolny()
-      subplot(lista_wyk, nrows=2, heights=c(0.8, 0.2))
+      lista_wyk = list(stan$wykres_gl)
+      if (stan$rodzaj_wykresu == 'liniowy') {
+        lista_wyk[[2]] = stan$wykresy_dolne[[1]]
+        lista_wyk[[3]] = stan$wykresy_dolne[[2]]
+      }
+      subplot(lista_wyk, nrows=3, heights=c(0.7, 0.15, 0.15))
     } else {
       plot_ly()
     }

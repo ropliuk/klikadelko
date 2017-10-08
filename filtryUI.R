@@ -20,7 +20,7 @@ ui.mw = function(ns, typ) {
 
 ui.dysl = function(ns, typ) {
   radioButtons(ns(paste0('f.dysl.', typ)),
-    label = 'Dysleksja gim',
+    label = 'Dysleksja',
     choices = list(
       'Ogół' = 'ogol',
       'Dysl' = paste0('dysl.', typ),
@@ -140,6 +140,31 @@ ui.wojewodztwo = function(ns, typ) {
   )
 }
 
+ui.typ.szkoly.m = function(ns) {
+  radioButtons(ns('f.typ.szkoly.m'),
+    label = 'Typ szkoły',
+    choiceNames = list(
+      'Ogół',
+      # textInput(ns(paste0('p.woj.', typ)), 'Numer wg. TERYT', '0'),
+      selectInput(ns('p.typ.szkoly.m'), '',
+        c(
+          'liceum ogólnokszt.' = 'LO',
+          'liceum profilowane' = 'LP',
+          'technikum' = 'T',
+          'liceum uzupełniające' = 'LOU',
+          'technikum uzupełniające' = 'TU'
+        ),
+        width="200px"
+      )
+    ),
+    choiceValues = list(
+      'ogol',
+      'typ.szkoly.m'
+    ),
+    selected = 'ogol'
+  )
+}
+
 ui.wynik.s.szkoly = function(ns, typ) {
   radioButtons(ns(paste0('f.wynik.s.szkoly.', typ)),
     label = 'Średni wynik testu SP',
@@ -176,14 +201,14 @@ ui.wynik = function(ns, typ, max) {
   )
 }
 
-ui.rocznik = function(ns) {
-  radioButtons(ns('f.rocznik'),
-    label = 'Czas w gimnazjum',
+ui.rocznik = function(ns, typ) {
+  radioButtons(ns(paste0('f.rocznik.', typ)),
+    label = 'Czas spędzony w szkole',
     choices = list(
       'Ogół' = 'ogol',
-      '1-2 lata' = 'mlodsi',
-      '3 lata' = 'o.czasie',
-      'ponad 3 lata' = 'starsi'
+      'poniżej planowego' = paste0('mlodsi.', typ),
+      'planowy' = paste0('o.czasie.', typ),
+      'powyżej planowego' = paste0('starsi.', typ)
     ),
     selected = 'ogol'
   )
@@ -211,31 +236,31 @@ ui.rok = function(ns, typ) {
   )
 }
 
-ui.rejonowosc = function(ns) {
-  radioButtons(ns('f.rejonowosc'),
-    label = 'Nietypowy wybór gim.',
+ui.rejonowosc = function(ns, typ) {
+  radioButtons(ns(paste0('f.rejonowosc.', typ)),
+    label = 'Nietypowy wybór szkoły',
     choiceNames = list(
       'Ogół',
       fluidRow(
-        textInput(ns('p.wedr.od.procent'), 'Inne gim. niż', '80'),
-        '% danej SP'
+        textInput(ns(paste0('p.wedr.od.procent.', typ)), 'Inna niż', '80'),
+        '% uczniów poprzedniej'
       )
     ),
     choiceValues = list(
       'ogol',
-      'wedrowniejsi'
+      paste0('wedrowniejsi.', typ)
     ),
     selected = 'ogol'
   )
 }
 
-ui.zmiana.powiatu = function(ns) {
-  radioButtons(ns('f.zmiana.powiatu'),
-    label = 'Zmiana powiatu SP -> gim.',
+ui.zmiana.powiatu = function(ns, typ) {
+  radioButtons(ns(paste0('f.zmiana.powiatu.', typ)),
+    label = 'Inny powiat niż poprzednia szkoła',
     choices = list(
       'Ogół' = 'ogol',
-      'Zmiana powiatu' = 'zm.pow',
-      'Brak zmiany' = 'brak.zm.pow'
+      'Zmiana powiatu' = paste0('zm.pow.', typ),
+      'Brak zmiany' = paste0('brak.zm.pow.', typ)
     ),
     selected = 'ogol'
   )
