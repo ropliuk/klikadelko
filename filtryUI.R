@@ -92,7 +92,7 @@ ui.w.szk = function(ns, typ) {
 
 ui.wojewodztwo = function(ns, typ) {
   radioButtons(ns(paste0('f.woj.', typ)),
-    label = 'Województwo',
+    label = 'Lokalizacja',
     choiceNames = list(
       'Ogół',
       # textInput(ns(paste0('p.woj.', typ)), 'Numer wg. TERYT', '0'),
@@ -129,12 +129,14 @@ ui.wojewodztwo = function(ns, typ) {
           'Wrocław'   = '1000000100000000'
         ),
         width="120px"
-      )
+      ),
+      textInput(ns(paste0('p.teryt.', typ)), 'Prefiks TERYT', '')
     ),
     choiceValues = list(
       'ogol',
       paste0('woj.', typ),
-      paste0('oke.', typ)
+      paste0('oke.', typ),
+      paste0('teryt.', typ)
     ),
     selected = 'ogol'
   )

@@ -17,9 +17,9 @@ SLOWNIK_PARAMETROW = list(
   f.rok.g = list('p.rok.min.g', 'p.rok.max.g'),
   f.rok.m = list('p.rok.min.m', 'p.rok.max.m'),
   f.gl.rok = list('p.rok.g', 'p.rok.m'),
-  f.woj.s = list('p.woj.s', 'p.oke.s'),
-  f.woj.g = list('p.woj.g', 'p.oke.g'),
-  f.woj.m = list('p.woj.m', 'p.oke.m'),
+  f.woj.s = list('p.woj.s', 'p.oke.s', 'p.teryt.s'),
+  f.woj.g = list('p.woj.g', 'p.oke.g', 'p.teryt.g'),
+  f.woj.m = list('p.woj.m', 'p.oke.m', 'p.teryt.m'),
   f.typ.szkoly.m = list('p.typ.szkoly.m')
 )
 
@@ -159,6 +159,22 @@ filtry = list(
   oke.m = function(dane, kontekst) {
     (!is.na(dane$teryt_mat)) &
       unlist(strsplit(kontekst$p.oke.m, ''))[dane$teryt_mat %/% 200000] == '1'
+  },
+
+  teryt.s = function(dane, kontekst) {
+    l.kropek = 7 - nchar(kontekst$p.teryt.s)
+    (!is.na(dane$teryt_sp)) &
+      dane$teryt_sp %/% (10 ** l.kropek) == as.numeric(kontekst$p.teryt.s)
+  },
+  teryt.g = function(dane, kontekst) {
+    l.kropek = 7 - nchar(kontekst$p.teryt.g)
+    (!is.na(dane$teryt_gim)) &
+      dane$teryt_gim %/% (10 ** l.kropek) == as.numeric(kontekst$p.teryt.g)
+  },
+  teryt.m = function(dane, kontekst) {
+    l.kropek = 7 - nchar(kontekst$p.teryt.m)
+    (!is.na(dane$teryt_mat)) &
+      dane$teryt_mat %/% (10 ** l.kropek) == as.numeric(kontekst$p.teryt.m)
   },
 
   typ.szkoly.m = function(dane, kontekst) {
