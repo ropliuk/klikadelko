@@ -20,3 +20,15 @@ shinyjs.otwartoModalWiersza = function(params) {
     wyslijZdarzenie('przelicz');
   });
 };
+
+shinyjs.zmienionoHaslo = function() {
+  nazwa = 'haslo'
+  if (!!otwarteWiersze[nazwa]) {
+    return;
+  }
+  otwarteWiersze[nazwa] = true;
+
+  radios = document.getElementById('f.gl.rok');
+
+  reactToClicksUnderRadios(radios.parentElement);
+}

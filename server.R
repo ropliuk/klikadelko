@@ -201,6 +201,12 @@ shinyServer(function(input, output, session) {
     stan$wykresy = isolate(wykresy())
   })
 
+  observe({
+    if (input$haslo == 'okelomza') {
+      js$zmienionoHaslo()
+    }
+  })
+
   wykresy = function() {
     if (
       (input$haslo == 'okelomza') |
