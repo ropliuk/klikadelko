@@ -213,6 +213,7 @@ shinyServer(function(input, output, session) {
   observe({
     if (input$haslo == 'okelomza') {
       js$zmienionoHaslo()
+      stan$wykresy = isolate(wykresy())
     }
   })
 
