@@ -33,7 +33,12 @@ shinyUI(fluidPage(
     tags$script(src="r-js.js"),
     tags$script(src="disable.js")
   ),
-  extendShinyjs(script="www/shinycalls.js", functions = c("otwartoModalWiersza")),
+  extendShinyjs(
+    script="www/shinycalls.js",
+    functions = c(
+      "otwartoModalWiersza",
+      "zmienionoHaslo"
+    )),
 
   includeCSS('styles.css'),
 #   tags$head(tags$script(HTML(JScode))),
