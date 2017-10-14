@@ -3,6 +3,14 @@ source('pom.R')
 source('wiersz.R')
 source('filtry.R')
 
+tab_diag_zmian = list()
+
+ustaw_tab_diag_zmian = function() {
+  lapply(1:WIERSZE, function(i) {
+    tab_diag_zmian[[i]] <<- TRUE
+  })
+}
+
 nowa_tab_wyszarzen = function() {
   # tab_wyszarzen = list()
   # lapply(LISTA_FILTROW, function(nazwa){ tab_wyszarzen[[nazwa]] <<- FALSE })
@@ -112,12 +120,14 @@ rysujWiersze = function(input, output) {
 
   observeEvent(wierszWspolny$edytujWiersz, {
     ustaw_tab_wyszarzen_wspolnych()
+    ustaw_tab_diag_zmian()
   }, priority = 2)
 
   lapply(1:WIERSZE, function(i) {
     klucz = paste0('wiersz', i)
     observeEvent(wiersze[[i]]$edytujWiersz, {
       ustaw_tab_wyszarzen()
+      tab_diag_zmian[[i]] <<- TRUE
     }, priority = 2)
   })
 

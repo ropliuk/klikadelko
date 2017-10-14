@@ -26,6 +26,9 @@ load('../sciezki3.RData') # ---> dane
 shinyServer(function(input, output, session) {
   session$allowReconnect(TRUE)
 
+  tab_diag = list()
+  tab_opisow = list()
+
   stan = reactiveValues(
     rodzaj_wykresu = 'liniowy',
     wykres_gl = plot_ly(),
@@ -35,6 +38,16 @@ shinyServer(function(input, output, session) {
     ost_czas = 0
   )
 
+  ustaw_tab_diag = function() {
+    lapply(1:WIERSZE, function(i) {
+      tab_diag[[i]] <<- FALSE
+      tab_opisow[[i]] <<- FALSE
+    })
+  }
+
+  ustaw_tab_diag()
+  ustaw_tab_diag_zmian()
+
   zarzadzajPanelem(input, output)
   rzeczyWPanelu(input, output, stan)
 
@@ -43,11 +56,13 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$przelicz, {
+    ustaw_tab_diag_zmian()
     przelicz()
   })
 
   observeEvent(input$osie, {
-    osie()
+    ustaw_tab_diag_zmian()
+    pokazOsie()
     js$otwartoModalWiersza('', 'modalOsi')
   })
 
@@ -55,6 +70,7 @@ shinyServer(function(input, output, session) {
     input$f.gl.rok
     input$p.rok.g
     input$p.rok.m
+    ustaw_tab_diag_zmian()
     isolate(przelicz())
   })
 
@@ -74,7 +90,7 @@ shinyServer(function(input, output, session) {
 #     paste('Wielkosc miejscowosci: od', input$ludnosc[1], 'do', input$ludnosc[2])
 #   })
 
-  osie = function(){
+  pokazOsie = function(){
     loguj('Osie')
     toggleModal(session, 'modalOsi', toggle = 'open')
   }
@@ -99,7 +115,8 @@ shinyServer(function(input, output, session) {
     lacz_warunki(wiersze[[nr_wiersza]], wierszWspolny, input)
   }
 
-  dodaj_serie = function(wykres, nr_wiersza, ktory_wykres) {
+  wylicz_serie = function(nr_wiersza, ktory_wykres) {
+    loguj('wylicz_serie', nr_wiersza)
     warunki = wyznacz_warunki(nr_wiersza)
 
     dane_serii = dane_glob() %>%
@@ -109,7 +126,13 @@ shinyServer(function(input, output, session) {
       os_Y_agreguj(input$os.wartosc.Y)
 
     opis = opis.dla.warunkow(warunki, nrow(dane_serii))
+    tab_diag[[nr_wiersza]] <<- dane_agr
+    tab_opisow[[nr_wiersza]] <<- opis
 
+    tab_diag_zmian[[nr_wiersza]] <<- FALSE
+  }
+
+  dodaj_serie = function(wykres, ktory_wykres, dane_agr, opis, nr_wiersza) {
     if (ktory_wykres == 'liniowy') {
       wykres %>%
         add_trace(
@@ -142,7 +165,12 @@ shinyServer(function(input, output, session) {
         loguj(sprintf('wykres_gl:wiersze[[%d]]', i),
           opis.dla.warunkow(wiersze[[i]], NULL)
         )
-        wykres = wykres %>% dodaj_serie(i, stan$rodzaj_wykresu)
+        # wykres = wykres %>% dodaj_serie(i, stan$rodzaj_wykresu)
+        if(tab_diag_zmian[[i]]) {
+          wylicz_serie(i, stan$rodzaj_wykresu)
+        }
+        wykres = wykres %>%
+          dodaj_serie(stan$rodzaj_wykresu, tab_diag[[i]], tab_opisow[[i]], i)
       }
     }
     wykres
