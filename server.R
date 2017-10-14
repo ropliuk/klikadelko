@@ -75,18 +75,23 @@ shinyServer(function(input, output, session) {
 #   })
 
   osie = function(){
-    print("Osie")
-    toggleModal(session, "modalOsi", toggle = "open")
+    loguj('Osie')
+    toggleModal(session, 'modalOsi', toggle = 'open')
   }
 
   przelicz = function() {
-    print("Przelicz")
+    loguj('Przelicz')
+    loguj('grupa', input$f.gl.rok, 'gim', input$p.rok.g, 'mat', input$p.rok.m)
+    loguj('rodzaj_wykresu', stan$rodzaj_wykresu)
+    loguj('os_X', input$os.wartosc.X, input$os.jednostka.X)
+    loguj('os_Y', input$os.wartosc.Y, input$os.jednostka.Y)
     czas = proc.time()[['elapsed']]
     stan$wykres_gl = wykres_gl()
     stan$wykresy_dolne = wykresy_dolne()
     stan$wykresy = wykresy()
     stan$pam_uzyta = pam_uzyta()
     stan$pam_cala = pam_cala()
+    loguj('pamiec', 'uzyta', stan$pam_uzyta, 'cala', stan$pam_cala)
     stan$ost_czas = proc.time()[['elapsed']] - czas
   }
 
@@ -125,6 +130,7 @@ shinyServer(function(input, output, session) {
   }
 
   wykres_gl = function() {
+    loguj('wykres_gl:wierszWspolny', opis.dla.warunkow(wierszWspolny, NULL))
     if (stan$rodzaj_wykresu == 'liniowy') {
       wykres = plot_ly(type='scatter', mode='lines', height=750)
     } else {
@@ -133,6 +139,9 @@ shinyServer(function(input, output, session) {
 
     for (i in 1:WIERSZE) {
       if (czyWiersze[[i]]$czy) {
+        loguj(sprintf('wykres_gl:wiersze[[%d]]', i),
+          opis.dla.warunkow(wiersze[[i]], NULL)
+        )
         wykres = wykres %>% dodaj_serie(i, stan$rodzaj_wykresu)
       }
     }
@@ -228,7 +237,7 @@ shinyServer(function(input, output, session) {
   })
 
   output$opis.osi.y = renderText({
-    sprintf("%s (%s)",
+    sprintf('%s (%s)',
       slownik.odwr(wybory.os.wartosc)[[input$os.wartosc.Y]],
       slownik.odwr(wybory.os.jednostka)[[input$os.jednostka.Y]]
     )
@@ -236,12 +245,12 @@ shinyServer(function(input, output, session) {
 
   output$opis.osi.x = renderText({
     if (stan$rodzaj_wykresu == 'liniowy') {
-      sprintf("%s (%s)",
+      sprintf('%s (%s)',
         slownik.odwr(wybory.os.wartosc)[[input$os.wartosc.X]],
         slownik.odwr(wybory.os.jednostka)[[input$os.jednostka.X]]
       )
     } else {
-      "(brak)"
+      '(brak)'
     }
   })
 

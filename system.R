@@ -6,6 +6,10 @@
 #   print(mem_used())
 # }
 
+loguj = function(...) {
+  cat(file=stderr(), '[K]', paste(Sys.time()), ..., "\n")
+}
+
 liczba_z_basha = function(polecenie) {
   as.numeric(system(polecenie, intern=TRUE))
 }
