@@ -24,9 +24,9 @@ opis.dla.warunkow = function(warunki, licznosc) {
     if (czy.filtr(warunki[[gr]])) {
       n = warunki[[gr]]
       if (n != 'ogol') {
-        if (gr %in% names(SLOWNIK_PARAMETROW)) {
+        if (n %in% names(SLOWNIK_PARAMETROW)) {
           n = sprintf('%s(%s)', n, paste(
-            lapply(SLOWNIK_PARAMETROW[[gr]], function(par) { warunki[[par]] }),
+            lapply(SLOWNIK_PARAMETROW[[n]], function(par) { warunki[[par]] }),
             collapse=','))
         }
         if (res == 'ogol') {
@@ -58,9 +58,10 @@ warunki.dot.matury = function(warunki) {
 przepisz_warunki_jesli = function(dokad, skad, warunek_na_filtr) {
   lapply(lista.filtrow(skad), function(nazwa) {
     if (warunek_na_filtr(nazwa)) {
-      dokad[[nazwa]] <<- skad[[nazwa]]
-      if (!is.null(SLOWNIK_PARAMETROW[[nazwa]])) {
-        lapply(SLOWNIK_PARAMETROW[[nazwa]], function(p) {
+      filtr = skad[[nazwa]]
+      dokad[[nazwa]] <<- filtr
+      if (!is.null(SLOWNIK_PARAMETROW[[filtr]])) {
+        lapply(SLOWNIK_PARAMETROW[[filtr]], function(p) {
           dokad[[p]] <<- skad[[p]]
         })
       }

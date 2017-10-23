@@ -100,10 +100,10 @@ shinyUI(fluidPage(
               ),
               choiceValues = list(
                 # 'ogol',
-                'rok.g',
-                'rok.m'
+                '.rok.g',
+                '.rok.m'
               ),
-              selected = 'rok.g'
+              selected = '.rok.g'
             )
           ),
            column(6,

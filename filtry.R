@@ -1,27 +1,29 @@
-SLOWNIK_PARAMETROW = list(
-  f.rejonowosc.g = list('p.wedr.od.procent.g'),
-  f.rejonowosc.m = list('p.wedr.od.procent.m'),
-  f.w.szk.s = list('p.w.szk.min.s', 'p.w.szk.max.s'),
-  f.w.szk.g = list('p.w.szk.min.g', 'p.w.szk.max.g'),
-  f.w.szk.m = list('p.w.szk.min.m', 'p.w.szk.max.m'),
-  f.ludnosc.s = list('p.ludnosc.min.s', 'p.ludnosc.max.s'),
-  f.ludnosc.g = list('p.ludnosc.min.g', 'p.ludnosc.max.g'),
-  f.ludnosc.m = list('p.ludnosc.min.m', 'p.ludnosc.max.m'),
-  f.wynik.s.szkoly.s = list('p.wynik.s.szkoly.min.s', 'p.wynik.s.szkoly.max.s'),
-  f.wynik.s.szkoly.g = list('p.wynik.s.szkoly.min.g', 'p.wynik.s.szkoly.max.g'),
-  f.wynik.s.szkoly.m = list('p.wynik.s.szkoly.min.m', 'p.wynik.s.szkoly.max.m'),
-  f.wynik.s = list('p.wynik.min.s', 'p.wynik.max.s'),
-  f.wynik.gh = list('p.wynik.min.gh', 'p.wynik.max.gh'),
-  f.wynik.gm = list('p.wynik.min.gm', 'p.wynik.max.gm'),
-  f.rok.s = list('p.rok.min.s', 'p.rok.max.s'),
-  f.rok.g = list('p.rok.min.g', 'p.rok.max.g'),
-  f.rok.m = list('p.rok.min.m', 'p.rok.max.m'),
-  f.gl.rok = list('p.rok.g', 'p.rok.m'),
-  f.woj.s = list('p.woj.s', 'p.oke.s', 'p.teryt.s'),
-  f.woj.g = list('p.woj.g', 'p.oke.g', 'p.teryt.g'),
-  f.woj.m = list('p.woj.m', 'p.oke.m', 'p.teryt.m'),
-  f.typ.szkoly.m = list('p.typ.szkoly.m')
-)
+SLOWNIK_PARAMETROW = list()
+
+dodaj_param = function(typy, nazwa_filtru, nazwy_parametrow) {
+  lapply(typy, function(typ) {
+    dodaj_typ = function(nazwa) {
+      sprintf('%s.%s', nazwa, typ)
+    }
+
+    SLOWNIK_PARAMETROW[[dodaj_typ(nazwa_filtru)]] <<-
+      lapply(nazwy_parametrow, dodaj_typ)
+  })
+}
+
+dodaj_param(list('g', 'm'), 'wedrowniejsi', list('p.wedr.od.procent'))
+dodaj_param(list('s', 'g', 'm'), 'w.szk', list('p.w.szk.min', 'p.w.szk.max'))
+dodaj_param(
+  list('s', 'g', 'm'), 'ludnosc', list('p.ludnosc.min', 'p.ludnosc.max'))
+dodaj_param(list('s', 'g', 'm'), 'wynik.s.szkoly',
+  list('p.wynik.s.szkoly.min', 'p.wynik.s.szkoly.max'))
+dodaj_param(list('s', 'gh', 'gm'), 'wynik', list('p.wynik.min', 'p.wynik.max'))
+dodaj_param(list('s', 'g', 'm'), 'rok', list('p.rok.min', 'p.rok.max'))
+dodaj_param(list('g', 'm'), '.rok', list('p.rok'))
+dodaj_param(list('s', 'g', 'm'), 'woj', list('p.woj'))
+dodaj_param(list('s', 'g', 'm'), 'oke', list('p.oke'))
+dodaj_param(list('s', 'g', 'm'), 'teryt', list('p.teryt'))
+dodaj_param(list('m'), 'typ.szkoly', list('p.typ.szkoly'))
 
 pom_filtr_wynik_X_szkoly_Y = function(X, Y, dane_wynik, kontekst) {
   (!is.na(dane_wynik$sr_wynik)) &
@@ -190,34 +192,22 @@ filtry = list(
       dane$rok_sp <= as.numeric(kontekst$p.rok.max.s)
   },
   rok.g = function(dane, kontekst) {
-    wynik = c(TRUE)
-    if (!is.null(kontekst$p.rok.g)) {
-      wynik = wynik &
-        (!is.na(dane$rok_gim)) &
-        dane$rok_gim == as.numeric(kontekst$p.rok.g)
-    }
-    if (!is.null(kontekst$p.rok.min.g)) {
-      wynik = wynik &
-        (!is.na(dane$rok_gim)) &
-        dane$rok_gim >= as.numeric(kontekst$p.rok.min.g) &
-        dane$rok_gim <= as.numeric(kontekst$p.rok.max.g)
-    }
-    wynik
+    (!is.na(dane$rok_gim)) &
+      dane$rok_gim >= as.numeric(kontekst$p.rok.min.g) &
+      dane$rok_gim <= as.numeric(kontekst$p.rok.max.g)
   },
   rok.m = function(dane, kontekst) {
-    wynik = c(TRUE)
-    if (!is.null(kontekst$p.rok.m)) {
-      wynik = wynik &
-        (!is.na(dane$rok_mat)) &
-        dane$rok_mat == as.numeric(kontekst$p.rok.m)
-    }
-    if (!is.null(kontekst$p.rok.min.m)) {
-      wynik = wynik &
-        (!is.na(dane$rok_mat)) &
-        dane$rok_mat >= as.numeric(kontekst$p.rok.min.m) &
-        dane$rok_mat <= as.numeric(kontekst$p.rok.max.m)
-    }
-    wynik
+    (!is.na(dane$rok_mat)) &
+      dane$rok_mat >= as.numeric(kontekst$p.rok.min.m) &
+      dane$rok_mat <= as.numeric(kontekst$p.rok.max.m)
+  },
+  .rok.g = function(dane, kontekst) {
+    (!is.na(dane$rok_gim)) &
+      dane$rok_gim == as.numeric(kontekst$p.rok.g)
+  },
+  .rok.m = function(dane, kontekst) {
+    (!is.na(dane$rok_mat)) &
+      dane$rok_mat == as.numeric(kontekst$p.rok.m)
   },
 
   zm.pow.g = function(dane, kontekst) {

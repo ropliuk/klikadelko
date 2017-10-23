@@ -4,7 +4,6 @@
 #       checkboxInput(ns('mw.m'), 'Gimnazjum miejskie', FALSE),
 #       checkboxInput(ns('mw.w'), 'Gimnazjum wiejskie', FALSE)
 #     ),
-list_pom2 = list();
 
 ui.mw = function(ns, typ) {
   radioButtons(ns(paste0('f.mw.', typ)),
