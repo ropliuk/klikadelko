@@ -26,7 +26,13 @@ opis.dla.warunkow = function(warunki, licznosc) {
       if (n != 'ogol') {
         if (n %in% names(SLOWNIK_PARAMETROW)) {
           n = sprintf('%s(%s)', n, paste(
-            lapply(SLOWNIK_PARAMETROW[[n]], function(par) { warunki[[par]] }),
+            lapply(SLOWNIK_PARAMETROW[[n]], function(par) {
+              if (n %in% names(SLOWNIK_OPISOW)) {
+                SLOWNIK_OPISOW[[n]](warunki[[par]])
+              } else {
+                warunki[[par]]
+              }
+            }),
             collapse=','))
         }
         if (res == 'ogol') {

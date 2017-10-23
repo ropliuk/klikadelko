@@ -89,6 +89,36 @@ ui.w.szk = function(ns, typ) {
   )
 }
 
+wybory.woj = list(
+  'Dolnośląskie' = '1',
+  'Kujawsko-pomorskie' = '2',
+  'Lubelskie' = '3',
+  'Lubuskie' = '4',
+  'Łódzkie' = '5',
+  'Małopolskie' = '6',
+  'Mazowieckie' = '7',
+  'Opolskie' = '8',
+  'Podkarpackie' = '9',
+  'Podlaskie' = '10',
+  'Pomorskie' = '11',
+  'Śląskie' = '12',
+  'Świętokrzyskie' = '13',
+  'Warmińsko-mazurskie' = '14',
+  'Wielkopolskie' = '15',
+  'Zachodniopomorskie' = '16'
+)
+
+wybory.oke = list(
+  'Gdańsk'    = '0100000000100000',
+  'Jaworzno'  = '0000000000010000',
+  'Kraków'    = '0010010010000000',
+  'Łomża'     = '0000000001000100',
+  'Łódź'      = '0000100000001000',
+  'Poznań'    = '0001000000000011',
+  'Warszawa'  = '0000001000000000',
+  'Wrocław'   = '1000000100000000'
+)
+
 ui.wojewodztwo = function(ns, typ) {
   radioButtons(ns(paste0('f.woj.', typ)),
     label = 'Lokalizacja',
@@ -96,37 +126,11 @@ ui.wojewodztwo = function(ns, typ) {
       'Ogół',
       # textInput(ns(paste0('p.woj.', typ)), 'Numer wg. TERYT', '0'),
       selectInput(ns(paste0('p.woj.', typ)), '',
-        c(
-          'Dolnośląskie' = '1',
-          'Kujawsko-pomorskie' = '2',
-          'Lubelskie' = '3',
-          'Lubuskie' = '4',
-          'Łódzkie' = '5',
-          'Małopolskie' = '6',
-          'Mazowieckie' = '7',
-          'Opolskie' = '8',
-          'Podkarpackie' = '9',
-          'Podlaskie' = '10',
-          'Pomorskie' = '11',
-          'Śląskie' = '12',
-          'Świętokrzyskie' = '13',
-          'Warmińsko-mazurskie' = '14',
-          'Wielkopolskie' = '15',
-          'Zachodniopomorskie' = '16'
-        ),
+        wybory.woj,
         width="120px"
       ),
       selectInput(ns(paste0('p.oke.', typ)), 'OKE:',
-        c(
-          'Gdańsk'    = '0100000000100000',
-          'Jaworzno'  = '0000000000010000',
-          'Kraków'    = '0010010010000000',
-          'Łomża'     = '0000000001000100',
-          'Łódź'      = '0000100000001000',
-          'Poznań'    = '0001000000000011',
-          'Warszawa'  = '0000001000000000',
-          'Wrocław'   = '1000000100000000'
-        ),
+        wybory.oke,
         width="120px"
       ),
       textInput(ns(paste0('p.teryt.', typ)), 'Prefiks TERYT', '')

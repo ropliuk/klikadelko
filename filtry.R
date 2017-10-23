@@ -1,6 +1,10 @@
-SLOWNIK_PARAMETROW = list()
+source('pom.R')
+source('filtryUI.R')
 
-dodaj_param = function(typy, nazwa_filtru, nazwy_parametrow) {
+SLOWNIK_PARAMETROW = list()
+SLOWNIK_OPISOW = list()
+
+dodaj_param = function(typy, nazwa_filtru, nazwy_parametrow, fun_opisu=NULL) {
   lapply(typy, function(typ) {
     dodaj_typ = function(nazwa) {
       sprintf('%s.%s', nazwa, typ)
@@ -8,6 +12,10 @@ dodaj_param = function(typy, nazwa_filtru, nazwy_parametrow) {
 
     SLOWNIK_PARAMETROW[[dodaj_typ(nazwa_filtru)]] <<-
       lapply(nazwy_parametrow, dodaj_typ)
+
+    if (!is.null(fun_opisu)) {
+      SLOWNIK_OPISOW[[dodaj_typ(nazwa_filtru)]] <<- fun_opisu
+    }
   })
 }
 
@@ -20,8 +28,12 @@ dodaj_param(list('s', 'g', 'm'), 'wynik.s.szkoly',
 dodaj_param(list('s', 'gh', 'gm'), 'wynik', list('p.wynik.min', 'p.wynik.max'))
 dodaj_param(list('s', 'g', 'm'), 'rok', list('p.rok.min', 'p.rok.max'))
 dodaj_param(list('g', 'm'), '.rok', list('p.rok'))
-dodaj_param(list('s', 'g', 'm'), 'woj', list('p.woj'))
-dodaj_param(list('s', 'g', 'm'), 'oke', list('p.oke'))
+dodaj_param(list('s', 'g', 'm'), 'woj', list('p.woj'), function(woj) {
+  substring(slownik.odwr(wybory.woj)[[woj]], 1, 4)
+})
+dodaj_param(list('s', 'g', 'm'), 'oke', list('p.oke'), function(oke) {
+  substring(slownik.odwr(wybory.oke)[[oke]], 1, 3)
+})
 dodaj_param(list('s', 'g', 'm'), 'teryt', list('p.teryt'))
 dodaj_param(list('m'), 'typ.szkoly', list('p.typ.szkoly'))
 
