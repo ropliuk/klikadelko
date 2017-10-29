@@ -173,7 +173,7 @@ ui.typ.szkoly.m = function(ns) {
 ui.dla.dor.m = function(ns) {
   radioButtons(ns('f.dla.dor.m'),
     label = 'Dla dorosłych',
-    choicesNames = list(
+    choiceNames = list(
       'Ogół',
       'Dla dorosłych',
       'Dla młodzieży'
@@ -181,9 +181,10 @@ ui.dla.dor.m = function(ns) {
     choiceValues = list(
       'ogol',
       'dla.dor.m',
-      'dla.ml.m',
+      'dla.ml.m'
     ),
     selected = 'ogol'
+  )
 }
 
 ui.wynik.s.szkoly = function(ns, typ) {
