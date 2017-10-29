@@ -138,7 +138,8 @@ shinyUI(fluidPage(
         #             value = c(0, 2000000)),
 #         textOutput('text1'),
         fluidRow(
-          column(12, actionButton('przelicz', tags$b('Przelicz'), width='100%'))
+          column(10, actionButton('przelicz', tags$b('Przelicz'), width='100%')),
+          column(2, downloadButton('pobierz', tags$b('CSV'), width='100%'))
         ),
         h4('WARUNKI WSPÓLNE'),
         uiOutput('wiersz0'),

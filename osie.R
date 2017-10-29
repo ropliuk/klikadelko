@@ -104,6 +104,39 @@ os_Y_agreguj = function(dane, wartosc) {
   }
 }
 
+opis.osi.krotki = function(ktora_os, input) {
+  slownik.odwr(wybory.os.wartosc)[[input[[paste0('os.wartosc.', ktora_os)]]]]
+}
+
+opis.pp = function(ktora_os, input) {
+  slownik.odwr(wybory.os.jednostka)[[input[[paste0('os.jednostka.', ktora_os)]]]]
+}
+
+opis.osi = function(ktora_os, input) {
+  if (opis.osi.krotki(ktora_os, input) == 'Liczność') {
+    'Liczność'
+  } else {
+    sprintf('%s (%s)', opis.osi.krotki(ktora_os, input), opis.pp(ktora_os, input)
+    )
+  }
+}
+
+opis.wykresu = function(rodzaj_wykresu, input) {
+  sprintf(
+    '%s %s',
+    if (input$os.wartosc.Y == 'os.licznosc') {
+      'Liczność'
+    } else {
+      sprintf('Średnia wartość "%s" (%s)', opis.osi.krotki('Y', input), opis.pp('Y', input))
+    },
+    if (rodzaj_wykresu == 'liniowy') {
+      sprintf('w zależności od "%s" (%s)', opis.osi.krotki('X', input), opis.pp('X', input))
+    } else {
+      ''
+    }
+  )
+}
+
 dodaj_os = function(dane, ktora_os, input) {
   wartosc = input[[paste0('os.wartosc.', ktora_os)]]
   jednostka = input[[paste0('os.jednostka.', ktora_os)]]

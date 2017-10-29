@@ -17,6 +17,7 @@ source('osie.R')
 source('system.R')
 source('r_js.R')
 source('postep.R')
+source('pobierz.R')
 
 #   skala = c(0,100,200,500,1000,2000,5000,10000,20000,50000,100000,200000,500000,1000000,2000000)
 
@@ -324,22 +325,23 @@ shinyServer(function(input, output, session) {
   })
 
   output$opis.osi.y = renderText({
-    sprintf('%s (%s)',
-      slownik.odwr(wybory.os.wartosc)[[input$os.wartosc.Y]],
-      slownik.odwr(wybory.os.jednostka)[[input$os.jednostka.Y]]
-    )
+    opis.osi('Y', input)
   })
 
   output$opis.osi.x = renderText({
     if (stan$rodzaj_wykresu == 'liniowy') {
-      sprintf('%s (%s)',
-        slownik.odwr(wybory.os.wartosc)[[input$os.wartosc.X]],
-        slownik.odwr(wybory.os.jednostka)[[input$os.jednostka.X]]
-      )
+      opis.osi('X', input)
     } else {
       '(brak)'
     }
   })
+
+  output$pobierz = downloadHandler(
+    filename = domyslna.nazwa.csv,
+    content = function(file) {
+      zapisz.csv(file, czyWiersze, tab_diag, tab_opisow, stan$rodzaj_wykresu, input)
+    }
+  )
 
   # output$plot2 = renderPlotly({
   #   wykres_dolny()
