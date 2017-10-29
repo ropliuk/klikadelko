@@ -1,4 +1,5 @@
 source('filtry.R')
+source('postep.R')
 
 is.string = function(input) {
   is.character(input) & length(input) == 1
@@ -8,10 +9,27 @@ czy.filtr = function(x) {
   is.string(x) & x %in% names(filtry)
 }
 
+liczba.filtrow.dla.warunkow = function(warunki) {
+  wynik = 0
+  for (gr in names(warunki)) {
+    if (czy.filtr(warunki[[gr]])) {
+      if (warunki[[gr]] != 'ogol') {
+        wynik = wynik + 1
+      }
+    }
+  }
+  wynik
+}
+
 filtr.dla.warunkow = function(dane, warunki) {
   filtr = TRUE
   for (gr in names(warunki)) {
     if (czy.filtr(warunki[[gr]])) {
+      if (warunki[[gr]] != 'ogol') {
+        postep_krok(NULL,
+          postep.gl,
+          msg=sprintf('Nakladam filtr: %s', warunki[[gr]]))
+      }
       filtr = filtr & filtry[[ warunki[[gr]] ]](dane, warunki)
     }
   }
@@ -92,9 +110,12 @@ dane_dla_wiersza = function(dane, warunki, ktory_wykres) {
   filtr = filtr.dla.warunkow(dane, warunki)
   if (ktory_wykres == 'liniowy') {
     dane[filtr,] %>%
+      postep_krok(postep.gl, msg='Grupuję wg osi X') %>%
       group_by(os_X) %>%
+      postep_krok(postep.gl, msg='Filtruję wg osi X') %>%
       drop_na(os_X)
   } else {
-    dane[filtr,]
+    dane[filtr,] %>%
+      postep_krok(postep.gl, 2)
   }
 }

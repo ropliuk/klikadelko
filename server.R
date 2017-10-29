@@ -16,6 +16,7 @@ source('kolory.R')
 source('osie.R')
 source('system.R')
 source('r_js.R')
+source('postep.R')
 
 #   skala = c(0,100,200,500,1000,2000,5000,10000,20000,50000,100000,200000,500000,1000000,2000000)
 
@@ -80,9 +81,11 @@ shinyServer(function(input, output, session) {
   ktoreProbkowac = res$ktoreProbkowac
   wierszWspolny = res$wierszWspolny
 
-  dane_glob = function() {
+  wylicz_dane_glob = function() {
     dane %>%
+      postep_krok(postep.gl, msg='Dodaję oś X') %>%
       dodaj_os('X', input) %>%
+      postep_krok(postep.gl, msg='Dodaję oś Y') %>%
       dodaj_os('Y', input)
   }
 
@@ -102,11 +105,19 @@ shinyServer(function(input, output, session) {
     loguj('os_X', input$os.wartosc.X, input$os.jednostka.X)
     loguj('os_Y', input$os.wartosc.Y, input$os.jednostka.Y)
     czas = proc.time()[['elapsed']]
+
+    postep.gl <<- postep_start(ile_krokow())
+
+    dane_glob <<- wylicz_dane_glob()
+
     stan$wykres_gl = wykres_gl()
     stan$wykresy_dolne = wykresy_dolne()
     stan$wykresy = wykresy()
     stan$pam_uzyta = pam_uzyta()
     stan$pam_cala = pam_cala()
+
+    postep_koniec(postep.gl)
+
     loguj('pamiec', 'uzyta', stan$pam_uzyta, 'cala', stan$pam_cala)
     stan$ost_czas = proc.time()[['elapsed']] - czas
   }
@@ -119,10 +130,12 @@ shinyServer(function(input, output, session) {
     loguj('wylicz_serie', nr_wiersza)
     warunki = wyznacz_warunki(nr_wiersza)
 
-    dane_serii = dane_glob() %>%
+    dane_serii = dane_glob %>%
+      postep_krok(postep.gl, msg='Filtruję wg osi Y') %>%
       drop_na(os_Y) %>%
       dane_dla_wiersza(warunki, ktory_wykres)
     dane_agr = dane_serii %>%
+      postep_krok(postep.gl, msg='Kumuluję wg osi Y') %>%
       os_Y_agreguj(input$os.wartosc.Y)
 
     opis = opis.dla.warunkow(warunki, nrow(dane_serii))
@@ -152,8 +165,39 @@ shinyServer(function(input, output, session) {
     }
   }
 
+  ile_krokow = function() {
+    # wylicz_dane_glob
+    ile_krokow = 2
+    for (i in 1:WIERSZE) {
+      if (czyWiersze[[i]]$czy) {
+        if (tab_diag_zmian[[i]]) {
+          ile_krokow = ile_krokow + 4
+          warunki = wyznacz_warunki(i)
+          ile_krokow = ile_krokow + liczba.filtrow.dla.warunkow(warunki)
+        }
+        ile_krokow = ile_krokow + 2
+      }
+    }
+    nr_wiersza = ktoreProbkowac$ktore
+    warunki = wyznacz_warunki(nr_wiersza)
+
+    # wykres dolny
+    ile_krokow = ile_krokow + 2 + liczba.filtrow.dla.warunkow(warunki)
+
+    # wykres dolny 2
+    if (czy_wykres_dolny2()) {
+      ile_krokow = ile_krokow + 2 + liczba.filtrow.dla.warunkow(warunki)
+    }
+
+    # laczenie wykresow
+    ile_krokow = ile_krokow + 1
+    ile_krokow
+  }
+
   wykres_gl = function() {
     loguj('wykres_gl:wierszWspolny', opis.dla.warunkow(wierszWspolny, NULL))
+    postep.gl$set(message='Wykres główny')
+
     if (stan$rodzaj_wykresu == 'liniowy') {
       wykres = plot_ly(type='scatter', mode='lines', height=750)
     } else {
@@ -166,22 +210,27 @@ shinyServer(function(input, output, session) {
           opis.dla.warunkow(wiersze[[i]], NULL)
         )
         # wykres = wykres %>% dodaj_serie(i, stan$rodzaj_wykresu)
-        if(tab_diag_zmian[[i]]) {
+        if (tab_diag_zmian[[i]]) {
           wylicz_serie(i, stan$rodzaj_wykresu)
         }
         wykres = wykres %>%
-          dodaj_serie(stan$rodzaj_wykresu, tab_diag[[i]], tab_opisow[[i]], i)
+          postep_krok(postep.gl, msg=sprintf('Generuję wykres dla serii %d', i)) %>%
+          dodaj_serie(stan$rodzaj_wykresu, tab_diag[[i]], tab_opisow[[i]], i) %>%
+          postep_krok(postep.gl, msg=sprintf('Wykres dla serii %d gotowy', i))
       }
     }
+
     wykres
   }
 
   wykres_dolny = function() {
+    postep.gl$set(message='Wykres liczności')
+
     # kursor = gdzie_kursor()
     nr_wiersza = ktoreProbkowac$ktore
     warunki = wyznacz_warunki(nr_wiersza)
 
-    wielkosci_probek = dane_glob() %>%
+    wielkosci_probek = dane_glob %>%
       drop_na(os_Y) %>%
       dane_dla_wiersza(warunki, 'liniowy') %>%
       summarize(liczba_uczniow = n())
@@ -196,18 +245,26 @@ shinyServer(function(input, output, session) {
     wykres
   }
 
+  czy_wykres_dolny2 = function() {
+    nr_wiersza = ktoreProbkowac$ktore
+    warunki = wyznacz_warunki(nr_wiersza)
+
+    !os.dot.matury(input$os.wartosc.X) &
+      os.dot.matury(input$os.wartosc.Y) &
+      !warunki.dot.matury(warunki)
+  }
+
   wykres_dolny2 = function() {
     # kursor = gdzie_kursor()
     nr_wiersza = ktoreProbkowac$ktore
     warunki = wyznacz_warunki(nr_wiersza)
 
-    if (os.dot.matury(input$os.wartosc.X) |
-      (!os.dot.matury(input$os.wartosc.Y)) |
-      warunki.dot.matury(warunki)
-    ) {
+    if (!czy_wykres_dolny2()) {
       NULL
     } else {
-      procenty_bez_matury = dane_glob() %>%
+      postep.gl$set(message='Wykres maturzystów')
+
+      procenty_bez_matury = dane_glob %>%
         dane_dla_wiersza(warunki, 'liniowy') %>%
         summarize(liczba_uczniow = mean(is.na(wynik_mma)))
 
@@ -246,6 +303,7 @@ shinyServer(function(input, output, session) {
   })
 
   wykresy = function() {
+    postep.gl$set(message='Łączę wykresy', detail='')
     if (
       (input$haslo == 'okelomza') |
       (session$clientData$url_hostname == '127.0.0.1')
