@@ -111,7 +111,7 @@ wierszModul = function(input, output, session, id, numer, fun_wyszarzen) {
   })
 
   output$opis <- renderText({
-    opis.dla.warunkow(input, NULL) %>% koloruj(kolorHtml(numer))
+    opis.dla.warunkow(input) %>% koloruj(kolorHtml(numer))
   })
 
   input

@@ -2,7 +2,7 @@ source('dane.R')
 source('pom.R')
 source('osie.R')
 
-zapisz.csv = function(file, czyWiersze, tab_diag, tab_opisow, rodzaj_wykresu, input) {
+zapisz.csv = function(file, czyWiersze, tab_diag, tab_opisow, rodzaj_wykresu, opis_wykresu, input) {
   tab = NULL
   for (i in 1:WIERSZE) {
     if (czyWiersze[[i]]$czy) {
@@ -17,7 +17,7 @@ zapisz.csv = function(file, czyWiersze, tab_diag, tab_opisow, rodzaj_wykresu, in
   }
 
   opis_osi_X = opis.osi.krotki('X', input)
-  opis_wykresu = opis.wykresu(rodzaj_wykresu, input)
+  opis_wykresu = opis.wykresu(rodzaj_wykresu, input, opis_wykresu)
 
   zawartosc.gl = do.call(
     paste,
@@ -41,5 +41,5 @@ zapisz.csv = function(file, czyWiersze, tab_diag, tab_opisow, rodzaj_wykresu, in
 }
 
 domyslna.nazwa.csv = function() {
-  format(Sys.time(), "dane_%Y-%m-%d_%H:%M:%S.csv")
+  format(Sys.time(), "dane_%Y-%m-%d_%H.%M.%S.csv")
 }

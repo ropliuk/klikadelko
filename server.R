@@ -127,6 +127,10 @@ shinyServer(function(input, output, session) {
     lacz_warunki(wiersze[[nr_wiersza]], wierszWspolny, input)
   }
 
+  wyznacz_warunki_wsp = function(nr_wiersza) {
+    lacz_warunki(list(), wierszWspolny, input)
+  }
+
   wylicz_serie = function(nr_wiersza, ktory_wykres) {
     loguj('wylicz_serie', nr_wiersza)
     warunki = wyznacz_warunki(nr_wiersza)
@@ -139,7 +143,7 @@ shinyServer(function(input, output, session) {
       postep_krok(postep.gl, msg='Kumuluję wg osi Y') %>%
       os_Y_agreguj(input$os.wartosc.Y)
 
-    opis = opis.dla.warunkow(warunki, nrow(dane_serii))
+    opis = opis.dla.warunkow(warunki, wyznacz_warunki_wsp(nr_wiersza), licznosc=nrow(dane_serii))
     tab_diag[[nr_wiersza]] <<- dane_agr
     tab_opisow[[nr_wiersza]] <<- opis
 
@@ -196,7 +200,7 @@ shinyServer(function(input, output, session) {
   }
 
   wykres_gl = function() {
-    loguj('wykres_gl:wierszWspolny', opis.dla.warunkow(wierszWspolny, NULL))
+    loguj('wykres_gl:wierszWspolny', opis.dla.warunkow(list(), wierszWspolny))
     postep.gl$set(message='Wykres główny')
 
     if (stan$rodzaj_wykresu == 'liniowy') {
@@ -208,7 +212,7 @@ shinyServer(function(input, output, session) {
     for (i in 1:WIERSZE) {
       if (czyWiersze[[i]]$czy) {
         loguj(sprintf('wykres_gl:wiersze[[%d]]', i),
-          opis.dla.warunkow(wiersze[[i]], NULL)
+          opis.dla.warunkow(wiersze[[i]])
         )
         # wykres = wykres %>% dodaj_serie(i, stan$rodzaj_wykresu)
         if (tab_diag_zmian[[i]]) {
@@ -240,7 +244,7 @@ shinyServer(function(input, output, session) {
       add_trace(
         x = ~os_X,
         y = ~liczba_uczniow,
-        name = opis.dla.warunkow(warunki, NULL),
+        name = opis.dla.warunkow(warunki),
         marker = list(color = kolorWykres(nr_wiersza)),
         showlegend = FALSE)
     wykres
@@ -279,7 +283,7 @@ shinyServer(function(input, output, session) {
         add_trace(
           x = ~os_X,
           y = ~liczba_uczniow,
-          name = opis.dla.warunkow(warunki, NULL),
+          name = opis.dla.warunkow(warunki),
           marker = list(color = kolorWykres(nr_wiersza)),
           showlegend = FALSE)
       wykres
@@ -339,7 +343,8 @@ shinyServer(function(input, output, session) {
   output$pobierz = downloadHandler(
     filename = domyslna.nazwa.csv,
     content = function(file) {
-      zapisz.csv(file, czyWiersze, tab_diag, tab_opisow, stan$rodzaj_wykresu, input)
+      zapisz.csv(file, czyWiersze, tab_diag, tab_opisow, stan$rodzaj_wykresu,
+        opis.dla.warunkow(wyznacz_warunki_wsp(nr_wiersza)), input)
     }
   )
 

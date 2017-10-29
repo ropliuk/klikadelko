@@ -121,9 +121,9 @@ opis.osi = function(ktora_os, input) {
   }
 }
 
-opis.wykresu = function(rodzaj_wykresu, input) {
+opis.wykresu = function(rodzaj_wykresu, input, opis_grupy) {
   sprintf(
-    '%s %s',
+    '%s %s w grupie "%s"',
     if (input$os.wartosc.Y == 'os.licznosc') {
       'Liczność'
     } else {
@@ -133,7 +133,8 @@ opis.wykresu = function(rodzaj_wykresu, input) {
       sprintf('w zależności od "%s" (%s)', opis.osi.krotki('X', input), opis.pp('X', input))
     } else {
       ''
-    }
+    },
+    opis_grupy
   )
 }
 
