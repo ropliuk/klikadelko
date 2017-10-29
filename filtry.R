@@ -196,6 +196,15 @@ filtry = list(
       dane$typ_szkoly_mat == kontekst$p.typ.szkoly.m
   },
 
+  dla.dor.m = function(dane, kontekst) {
+    (!is.na(dane$id_szkoly_mat)) &
+      dane$dla_doroslych_mat
+  },
+  dla.ml.m = function(dane, kontekst) {
+    (!is.na(dane$id_szkoly_mat)) &
+      !dane$dla_doroslych_mat
+  },
+
   # CECHY UCZNIA W SZKOLE
 
   rok.s = function(dane, kontekst) {

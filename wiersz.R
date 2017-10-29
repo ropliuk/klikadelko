@@ -65,7 +65,8 @@ wierszUI = function(id) {
             column(4, ui.w.szk(ns, 'm')),
             column(4, ui.wynik.s.szkoly(ns, 'm')),
             column(4, ui.wojewodztwo(ns, 'm')),
-            column(6, ui.typ.szkoly.m(ns))
+            column(6, ui.typ.szkoly.m(ns)),
+            column(4, ui.dla.dor.m(ns))
           )),
           tabPanel('Cechy ucznia szkoły PG', fluidRow(
             column(4, ui.rok(ns, 'm')),

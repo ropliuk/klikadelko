@@ -170,6 +170,22 @@ ui.typ.szkoly.m = function(ns) {
   )
 }
 
+ui.dla.dor.m = function(ns) {
+  radioButtons(ns('f.dla.dor.m'),
+    label = 'Dla dorosłych',
+    choicesNames = list(
+      'Ogół',
+      'Dla dorosłych',
+      'Dla młodzieży'
+    ),
+    choiceValues = list(
+      'ogol',
+      'dla.dor.m',
+      'dla.ml.m',
+    ),
+    selected = 'ogol'
+}
+
 ui.wynik.s.szkoly = function(ns, typ) {
   radioButtons(ns(paste0('f.wynik.s.szkoly.', typ)),
     label = 'Średni wynik testu SP',
