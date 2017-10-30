@@ -26,7 +26,7 @@ zapisz.csv = function(file, czyWiersze, tab_diag, tab_opisow, rodzaj_wykresu, op
         tab %>%
           arrange(os_X) %>%
           sp_rename('os_X', opis_osi_X) %>%
-          write.csv(stdout(), row.names=FALSE, na=''))),
+          write.table(stdout(), row.names=FALSE, na='', sep=';'))),
       sep = '\n'
     ))
 
