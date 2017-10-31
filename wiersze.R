@@ -26,6 +26,11 @@ rysujWiersze = function(input, output) {
     reactiveValues(czy = (i == 1))
   })
 
+  edytujWiersz = lapply(1:WIERSZE, function(i) {
+    reactiveValues(edytuj = 0)
+  })
+  edytujWierszWspolny = reactiveValues(edytuj = 0)
+
   ktoreProbkowac = reactiveValues(
     ktore = 1
   )
@@ -40,14 +45,14 @@ rysujWiersze = function(input, output) {
     callModule(wierszModul, klucz, id = klucz, numer = i, function(nazwa) {
       czy = tab_wyszarzen[[nazwa]]
       !is.null(czy) & czy
-    })
+    }, edytujWiersz[[i]])
   })
 
   wierszWspolny = callModule(
     wierszModul, 'wiersz0', id = 'wiersz0', numer = 0, function(nazwa) {
       czy = tab_wyszarzen_wspolnych[[nazwa]]
       !is.null(czy) & czy
-    })
+    }, edytujWierszWspolny)
 
   lapply(1:WIERSZE, function(i) {
     observeEvent(wiersze[[i]]$pokazWielkoscProbek, {
@@ -87,6 +92,7 @@ rysujWiersze = function(input, output) {
     }
     czyWiersze[[i]]$czy <<- TRUE
     stan$liczbaWierszy <<- stan$liczbaWierszy + 1
+    edytuj_wiersz(i)
     ktoreProbkowac$ktore <<- i
   }
 
@@ -118,17 +124,22 @@ rysujWiersze = function(input, output) {
     })
   }
 
+  edytuj_wiersz = function(nr_wiersza) {
+    ustaw_tab_wyszarzen()
+    tab_diag_zmian[[nr_wiersza]] <<- TRUE
+    edytujWiersz[[nr_wiersza]]$edytuj <<- edytujWiersz[[nr_wiersza]]$edytuj + 1
+  }
+
   observeEvent(wierszWspolny$edytujWiersz, {
     ustaw_tab_wyszarzen_wspolnych()
     ustaw_tab_diag_zmian()
-  }, priority = 2)
+    edytujWierszWspolny$edytuj <<- edytujWierszWspolny$edytuj + 1
+  })
 
   lapply(1:WIERSZE, function(i) {
-    klucz = paste0('wiersz', i)
     observeEvent(wiersze[[i]]$edytujWiersz, {
-      ustaw_tab_wyszarzen()
-      tab_diag_zmian[[i]] <<- TRUE
-    }, priority = 2)
+      edytuj_wiersz(i)
+    })
   })
 
   usunWiersz = function(i) {

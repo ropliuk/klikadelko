@@ -89,18 +89,20 @@ koloruj = function(tekst, kolor) {
 }
 
 
-wierszModul = function(input, output, session, id, numer, fun_wyszarzen) {
-  observeEvent(input$edytujWiersz, {
-    toggleModal(session, "modalnew", toggle = "open")
-    js$otwartoModalWiersza(id, '-modalnew')
-    for (nazwa in lista.filtrow(input)) {
-      if (fun_wyszarzen(nazwa)) {
-        shinyjs::disable(nazwa)
-      } else {
-        shinyjs::enable(nazwa)
+wierszModul = function(input, output, session, id, numer, fun_wyszarzen, edytujWiersz) {
+  observeEvent(edytujWiersz$edytuj, {
+    if (edytujWiersz$edytuj > 0) {
+      toggleModal(session, "modalnew", toggle = "open")
+      js$otwartoModalWiersza(id, '-modalnew')
+      for (nazwa in lista.filtrow(input)) {
+        if (fun_wyszarzen(nazwa)) {
+          shinyjs::disable(nazwa)
+        } else {
+          shinyjs::enable(nazwa)
+        }
       }
     }
-  }, priority = 1)
+  })
 
   output$numer <- renderText({
     if (numer > 0) {
