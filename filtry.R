@@ -37,7 +37,7 @@ dodaj_param(list('s', 'g', 'm'), 'oke', list('p.oke'), function(oke) {
 dodaj_param(list('s', 'g', 'm'), 'teryt', list('p.teryt'))
 dodaj_param(list('m'), 'typ.szkoly', list('p.typ.szkoly'))
 
-pom_filtr_wynik_X_szkoly_Y = function(X, Y, dane_wynik, kontekst) {
+pom_filtr_wynik_X_szkoly_Y = function(dane_wynik, kontekst, X, Y) {
   (!is.na(dane_wynik$sr_wynik)) &
     dane_wynik$sr_wynik >=
       as.numeric(kontekst[[sprintf("p.wynik.%s.szkoly.min.%s", X, Y)]]) &
