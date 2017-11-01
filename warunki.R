@@ -127,17 +127,3 @@ lacz_warunki = function(wiersz, wierszWspolny, input) {
     przepisz_warunki_jesli(wierszWspolny,
       function(nazwa) { wierszWspolny[[nazwa]] != 'ogol' })
 }
-
-dane_dla_wiersza = function(dane, warunki, ktory_wykres) {
-  filtr = filtr.dla.warunkow(dane, warunki)
-  if (ktory_wykres == 'liniowy') {
-    dane[filtr,] %>%
-      postep_krok(postep.gl, msg='Grupuję wg osi X') %>%
-      group_by(os_X) %>%
-      postep_krok(postep.gl, msg='Filtruję wg osi X') %>%
-      drop_na(os_X)
-  } else {
-    dane[filtr,] %>%
-      postep_krok(postep.gl, 2)
-  }
-}

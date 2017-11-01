@@ -30,7 +30,8 @@ shinyServer(function(input, output, session) {
 
   tab_diag = list()
   tab_opisow = list()
-  tab_dane_dla_serii = list()
+  # tab_dane_dla_serii = list()
+  tab_filtr_dla_serii = list()
 
   stan = reactiveValues(
     rodzaj_wykresu = 'liniowy',
@@ -45,7 +46,8 @@ shinyServer(function(input, output, session) {
     lapply(1:WIERSZE, function(i) {
       tab_diag[[i]] <<- FALSE
       tab_opisow[[i]] <<- FALSE
-      tab_dane_dla_serii[[i]] <<- FALSE
+      # tab_dane_dla_serii[[i]] <<- FALSE
+      tab_filtr_dla_serii[[i]] <<- TRUE
     })
   }
 
@@ -55,8 +57,8 @@ shinyServer(function(input, output, session) {
   zarzadzajPanelem(input, output)
   rzeczyWPanelu(input, output, stan)
 
-  odbierajZdarzenie(input, session, 'przelicz', function() {
-    przelicz()
+  odbierajZdarzenie(input, session, 'przelicz', function(nazwaModalu) {
+    przelicz(nazwaModalu == 'modalOsi')
   })
 
   observeEvent(input$przelicz, {
@@ -67,16 +69,17 @@ shinyServer(function(input, output, session) {
   observeEvent(input$osie, {
     ustaw_tab_diag_zmian()
     pokazOsie()
-    js$otwartoModalWiersza('', 'modalOsi')
+    js$otwartoModalWiersza('modalOsi', '')
   })
 
-  observe({
-    input$f.gl.rok
-    input$p.rok.g
-    input$p.rok.m
-    ustaw_tab_diag_zmian()
-    isolate(przelicz())
-  })
+  pierwszaZmianaGrupy = TRUE
+  observeEvent(
+    c(input$f.gl.rok, input$p.rok.g, input$p.rok.m),
+    {
+      ustaw_tab_diag_zmian()
+      przelicz(pierwszaZmianaGrupy)
+      pierwszaZmianaGrupy <<- FALSE
+    })
 
   pokaz_licznosci = function() {
     stan$wykresy_dolne = isolate(wykresy_dolne())
@@ -106,7 +109,7 @@ shinyServer(function(input, output, session) {
     toggleModal(session, 'modalOsi', toggle = 'open')
   }
 
-  przelicz = function() {
+  przelicz = function(czy_zmiana_osi = FALSE) {
     loguj('Przelicz')
     loguj('grupa', input$f.gl.rok, 'gim', input$p.rok.g, 'mat', input$p.rok.m)
     loguj('rodzaj_wykresu', stan$rodzaj_wykresu)
@@ -116,7 +119,9 @@ shinyServer(function(input, output, session) {
 
     postep.gl <<- postep_start(ile_krokow())
 
-    dane_glob <<- wylicz_dane_glob()
+    if (czy_zmiana_osi) {
+      dane_glob <<- wylicz_dane_glob()
+    }
 
     stan$wykres_gl = wykres_gl()
     stan$wykresy_dolne = wykresy_dolne()
@@ -138,19 +143,39 @@ shinyServer(function(input, output, session) {
     lacz_warunki(list(), wierszWspolny, input)
   }
 
+  dane_dla_wiersza = function(dane, warunki, ktory_wykres) {
+    # filtr = filtr.dla.warunkow(dane, warunki)
+    if (ktory_wykres == 'liniowy') {
+      # dane[filtr,] %>%
+      dane %>%
+        postep_krok(postep.gl, msg='Grupuję wg osi X') %>%
+        group_by(os_X) %>%
+        postep_krok(postep.gl, msg='Filtruję wg osi X') %>%
+        drop_na(os_X)
+    } else {
+      # dane[filtr,] %>%
+      dane %>%
+        postep_krok(postep.gl, 2)
+    }
+  }
+
   wylicz_serie = function(nr_wiersza, ktory_wykres) {
     loguj('wylicz_serie', nr_wiersza)
     warunki = wyznacz_warunki(nr_wiersza)
 
-    tab_dane_dla_serii[[nr_wiersza]] <<- dane_glob %>%
-      postep_krok(postep.gl, msg='Filtruję wg osi Y') %>%
-      dane_dla_wiersza(warunki, ktory_wykres)
+    # tab_dane_dla_serii[[nr_wiersza]] <<- dane_glob %>%
+      # postep_krok(postep.gl, msg='Filtruję wg osi Y') %>%
+      # dane_dla_wiersza(warunki, ktory_wykres)
+    tab_filtr_dla_serii[[nr_wiersza]] <<- filtr.dla.warunkow(dane_glob, warunki)
 
     dane_serii =
       # dane_glob %>%
       # postep_krok(postep.gl, msg='Filtruję wg osi Y') %>%
       # drop_na(os_Y) %>%
-      tab_dane_dla_serii[[nr_wiersza]] %>%
+
+      # tab_dane_dla_serii[[nr_wiersza]] %>%
+      dane_glob[tab_filtr_dla_serii[[nr_wiersza]],] %>%
+      dane_dla_wiersza(warunki, ktory_wykres) %>%
       postep_krok(postep.gl, msg='Filtruję wg osi Y') %>%
       # dane_dla_wiersza(warunki, ktory_wykres) %>%
       drop_na(os_Y)
@@ -254,7 +279,8 @@ shinyServer(function(input, output, session) {
       # dane_glob %>%
       # drop_na(os_Y) %>%
       # dane_dla_wiersza(warunki, 'liniowy') %>%
-      tab_dane_dla_serii[[nr_wiersza]] %>%
+      dane_glob[tab_filtr_dla_serii[[nr_wiersza]],] %>%
+      dane_dla_wiersza(warunki, 'liniowy') %>%
       drop_na(os_Y) %>%
       summarize(liczba_uczniow = n())
 
@@ -290,7 +316,10 @@ shinyServer(function(input, output, session) {
         print('ciap3')
         # dane_glob %>%
         # dane_dla_wiersza(warunki, 'liniowy') %>%
-        tab_dane_dla_serii[[nr_wiersza]] %>%
+
+        # tab_dane_dla_serii[[nr_wiersza]] %>%
+        dane_glob[tab_filtr_dla_serii[[nr_wiersza]],] %>%
+        dane_dla_wiersza(warunki, 'liniowy')
         summarize(liczba_uczniow = mean(is.na(wynik_mma)))
 
       wykres = plot_ly(procenty_bez_matury, type='bar') %>%

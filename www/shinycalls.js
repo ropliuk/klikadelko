@@ -28,7 +28,7 @@ shinyjs.otwartoModalWiersza = function(params) {
 
       modal.addEventListener('transitioncancel', function() {
         console.log('Z', nazwa);
-        wyslijZdarzenie('przelicz');
+        wyslijZdarzenie('przelicz', nazwa);
       });
     }
   }
