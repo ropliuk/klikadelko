@@ -30,6 +30,7 @@ shinyServer(function(input, output, session) {
 
   tab_diag = list()
   tab_opisow = list()
+  tab_dane_dla_serii = list()
 
   stan = reactiveValues(
     rodzaj_wykresu = 'liniowy',
@@ -44,6 +45,7 @@ shinyServer(function(input, output, session) {
     lapply(1:WIERSZE, function(i) {
       tab_diag[[i]] <<- FALSE
       tab_opisow[[i]] <<- FALSE
+      tab_dane_dla_serii[[i]] <<- FALSE
     })
   }
 
@@ -135,10 +137,18 @@ shinyServer(function(input, output, session) {
     loguj('wylicz_serie', nr_wiersza)
     warunki = wyznacz_warunki(nr_wiersza)
 
-    dane_serii = dane_glob %>%
+    tab_dane_dla_serii[[nr_wiersza]] <<- dane_glob %>%
       postep_krok(postep.gl, msg='Filtruję wg osi Y') %>%
-      drop_na(os_Y) %>%
       dane_dla_wiersza(warunki, ktory_wykres)
+
+    dane_serii =
+      # dane_glob %>%
+      # postep_krok(postep.gl, msg='Filtruję wg osi Y') %>%
+      # drop_na(os_Y) %>%
+      tab_dane_dla_serii[[nr_wiersza]] %>%
+      postep_krok(postep.gl, msg='Filtruję wg osi Y') %>%
+      # dane_dla_wiersza(warunki, ktory_wykres) %>%
+      drop_na(os_Y)
     dane_agr = dane_serii %>%
       postep_krok(postep.gl, msg='Kumuluję wg osi Y') %>%
       os_Y_agreguj(input$os.wartosc.Y)
@@ -235,9 +245,12 @@ shinyServer(function(input, output, session) {
     nr_wiersza = ktoreProbkowac$ktore
     warunki = wyznacz_warunki(nr_wiersza)
 
-    wielkosci_probek = dane_glob %>%
+    wielkosci_probek =
+      # dane_glob %>%
+      # drop_na(os_Y) %>%
+      # dane_dla_wiersza(warunki, 'liniowy') %>%
+      tab_dane_dla_serii[[nr_wiersza]] %>%
       drop_na(os_Y) %>%
-      dane_dla_wiersza(warunki, 'liniowy') %>%
       summarize(liczba_uczniow = n())
 
     wykres = plot_ly(wielkosci_probek, type='bar') %>%
@@ -260,24 +273,20 @@ shinyServer(function(input, output, session) {
   }
 
   wykres_dolny2 = function() {
-    # kursor = gdzie_kursor()
     nr_wiersza = ktoreProbkowac$ktore
     warunki = wyznacz_warunki(nr_wiersza)
 
     if (!czy_wykres_dolny2()) {
       NULL
     } else {
-      postep.gl$set(message='Wykres maturzystów')
+      postep.gl$set(message='Wykdane_globres maturzystów')
 
-      procenty_bez_matury = dane_glob %>%
-        dane_dla_wiersza(warunki, 'liniowy') %>%
+      procenty_bez_matury =
+        print('ciap3')
+        # dane_glob %>%
+        # dane_dla_wiersza(warunki, 'liniowy') %>%
+        tab_dane_dla_serii[[nr_wiersza]] %>%
         summarize(liczba_uczniow = mean(is.na(wynik_mma)))
-
-      # procent_probek = wielkosci_probek / summarize(w2, liczba_uczniow = n())
-
-        # dane_dla_wiersza(warunki, 'liniowy'))$wynik_mma) %>%
-        # wielkosci_probek = is.na((dane_glob() %>%
-        # summarize(liczba_uczniow = n())
 
       wykres = plot_ly(procenty_bez_matury, type='bar') %>%
         add_trace(
