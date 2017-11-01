@@ -251,6 +251,7 @@ shinyServer(function(input, output, session) {
 
     for (i in 1:WIERSZE) {
       if (czyWiersze[[i]]$czy) {
+        postep.gl$set(message=sprintf('Wykres główny (%d)', i))
         loguj(sprintf('wykres_gl:wiersze[[%d]]', i),
           opis.dla.warunkow(wiersze[[i]])
         )
