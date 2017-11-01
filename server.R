@@ -78,7 +78,12 @@ shinyServer(function(input, output, session) {
     isolate(przelicz())
   })
 
-  res = rysujWiersze(input, output)
+  pokaz_licznosci = function() {
+    stan$wykresy_dolne = isolate(wykresy_dolne())
+    stan$wykresy = isolate(wykresy())
+  }
+
+  res = rysujWiersze(input, output, pokaz_licznosci)
   czyWiersze = res$czyWiersze
   wiersze = res$wiersze
   ktoreProbkowac = res$ktoreProbkowac
@@ -303,11 +308,11 @@ shinyServer(function(input, output, session) {
     list(wykres_dolny(), wykres_dolny2())
   }
 
-  observe({
-    ktoreProbkowac$ktore
-    stan$wykresy_dolne = isolate(wykresy_dolne())
-    stan$wykresy = isolate(wykresy())
-  })
+  # observe({
+  #   ktoreProbkowac$ktore
+  #   stan$wykresy_dolne = isolate(wykresy_dolne())
+  #   stan$wykresy = isolate(wykresy())
+  # })
 
   observe({
     if (input$haslo == 'okelomza') {

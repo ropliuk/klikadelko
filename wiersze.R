@@ -21,7 +21,7 @@ nowa_tab_wyszarzen = function() {
 tab_wyszarzen_wspolnych = nowa_tab_wyszarzen()
 tab_wyszarzen = nowa_tab_wyszarzen()
 
-rysujWiersze = function(input, output) {
+rysujWiersze = function(input, output, pokaz_licznosci) {
   czyWiersze = lapply(1:WIERSZE, function(i) {
     reactiveValues(czy = (i == 1))
   })
@@ -40,6 +40,9 @@ rysujWiersze = function(input, output) {
     dodawalnosc = TRUE
   )
 
+  js$otwartoModalWiersza('wiersz0', '-modalnew')
+  js$otwartoModalWiersza('wiersz1', '-modalnew')
+
   wiersze = lapply(1:WIERSZE, function(i) {
     klucz = paste0('wiersz', i)
     callModule(wierszModul, klucz, id = klucz, numer = i, function(nazwa) {
@@ -57,6 +60,7 @@ rysujWiersze = function(input, output) {
   lapply(1:WIERSZE, function(i) {
     observeEvent(wiersze[[i]]$pokazWielkoscProbek, {
       ktoreProbkowac$ktore <<- i
+      pokaz_licznosci()
     })
   })
 
@@ -92,6 +96,8 @@ rysujWiersze = function(input, output) {
     }
     czyWiersze[[i]]$czy <<- TRUE
     stan$liczbaWierszy <<- stan$liczbaWierszy + 1
+    klucz = paste0('wiersz', i)
+    js$otwartoModalWiersza(klucz, '-modalnew')
     edytuj_wiersz(i)
     ktoreProbkowac$ktore <<- i
   }

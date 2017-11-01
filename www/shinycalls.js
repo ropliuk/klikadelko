@@ -1,20 +1,24 @@
 otwarteWiersze = {}
 
 shinyjs.otwartoModalWiersza = function(params) {
-  nazwa = params[0]
-  nazwa2 = params[1]
+  var nazwa = params[0]
+  var nazwa2 = params[1]
 
-  if (!!otwarteWiersze[nazwa]) {
-    return;
-  }
-  otwarteWiersze[nazwa] = true;
+  console.log('OMW', nazwa);
+
+  // if (!!otwarteWiersze[nazwa]) {
+  //   return;
+  // }
+  // otwarteWiersze[nazwa] = true;
   // modal = document.getElementById(nazwa + '-modalnew');
 
-  zegar = setInterval(szukaj, 100);
+  console.log('OMW2', nazwa);
+
+  var zegar = setInterval(szukaj, 500);
 
   function szukaj() {
-    modal = document.getElementById(nazwa + nazwa2);
-    console.log('M', modal);
+    var modal = document.getElementById(nazwa + nazwa2);
+    console.log('M', nazwa, modal);
 
     if (!!modal) {
       clearInterval(zegar);
@@ -31,7 +35,7 @@ shinyjs.otwartoModalWiersza = function(params) {
 };
 
 shinyjs.zmienionoHaslo = function() {
-  nazwa = 'haslo'
+  var nazwa = 'haslo'
   if (!!otwarteWiersze[nazwa]) {
     return;
   }

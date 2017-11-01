@@ -93,7 +93,6 @@ wierszModul = function(input, output, session, id, numer, fun_wyszarzen, edytujW
   observeEvent(edytujWiersz$edytuj, {
     if (edytujWiersz$edytuj > 0) {
       toggleModal(session, "modalnew", toggle = "open")
-      js$otwartoModalWiersza(id, '-modalnew')
       for (nazwa in lista.filtrow(input)) {
         if (fun_wyszarzen(nazwa)) {
           shinyjs::disable(nazwa)
