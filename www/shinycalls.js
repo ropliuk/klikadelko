@@ -9,16 +9,25 @@ shinyjs.otwartoModalWiersza = function(params) {
   }
   otwarteWiersze[nazwa] = true;
   // modal = document.getElementById(nazwa + '-modalnew');
-  modal = document.getElementById(nazwa + nazwa2);
 
-  console.log('O', nazwa, modal);
+  zegar = setInterval(szukaj, 100);
 
-  reactToClicksUnderRadios(modal);
+  function szukaj() {
+    modal = document.getElementById(nazwa + nazwa2);
+    console.log('M', modal);
 
-  modal.addEventListener('transitioncancel', function() {
-    console.log('Z', nazwa);
-    wyslijZdarzenie('przelicz');
-  });
+    if (!!modal) {
+      clearInterval(zegar);
+      console.log('O', nazwa, modal);
+
+      reactToClicksUnderRadios(modal);
+
+      modal.addEventListener('transitioncancel', function() {
+        console.log('Z', nazwa);
+        wyslijZdarzenie('przelicz');
+      });
+    }
+  }
 };
 
 shinyjs.zmienionoHaslo = function() {
