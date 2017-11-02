@@ -236,6 +236,18 @@ ui.rocznik = function(ns, typ) {
   )
 }
 
+ui.czy.dane = function(ns, typ) {
+  radioButtons(ns(paste0('f.czy.dane.', typ)),
+    label = 'Czy mamy dane z egzaminu',
+    choices = list(
+      'Ogół' = 'ogol',
+      'Są dane' = paste0('dane.', typ),
+      'Brak danych' = paste0('b.d.', typ)
+    ),
+    selected = 'ogol'
+  )
+}
+
 ui.rok = function(ns, typ) {
   min = ifelse(typ == 's', 2010, 2013)
   max = ifelse(typ == 's', 2013, 2016)

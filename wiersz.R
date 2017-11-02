@@ -39,6 +39,7 @@ wierszUI = function(id) {
             column(4, ui.rok(ns, 's')),
             column(4, ui.wynik(ns, 's', '40')),
             column(3, ui.dysl(ns, 's')),
+            column(3, ui.czy.dane(ns, 's')),
             column(3, ui.laureat(ns, 's'))
           )),
           tabPanel('Cechy gimnazjum', fluidRow(
@@ -53,6 +54,7 @@ wierszUI = function(id) {
             column(4, ui.rok(ns, 'g')),
             column(3, ui.dysl(ns, 'g')),
             column(3, ui.rocznik(ns, 'g')),
+            column(3, ui.czy.dane(ns, 'g')),
             column(3, ui.zmiana.powiatu(ns, 'g')),
             column(3, ui.rejonowosc(ns, 'g')),
             column(3, ui.laureat(ns, 'gh')),
@@ -72,6 +74,7 @@ wierszUI = function(id) {
             column(4, ui.rok(ns, 'm')),
             column(3, ui.dysl(ns, 'm')),
             column(3, ui.rocznik(ns, 'm')),
+            column(3, ui.czy.dane(ns, 'm')),
             column(3, ui.zmiana.powiatu(ns, 'm')),
             column(3, ui.rejonowosc(ns, 'm')),
             column(3, ui.laureat(ns, 'mpo')),

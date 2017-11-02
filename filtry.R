@@ -298,7 +298,24 @@ filtry = list(
           (dane$rok_mat - dane$rok_gim < 3)))
       )
   },
-
+  b.d.s = function(dane, kontekst) {
+    is.na(dane$rok_sp)
+  },
+  b.d.g = function(dane, kontekst) {
+    is.na(dane$rok_gim)
+  },
+  b.d.m = function(dane, kontekst) {
+    is.na(dane$rok_mat)
+  },
+  dane.s = function(dane, kontekst) {
+    !is.na(dane$rok_sp)
+  },
+  dane.g = function(dane, kontekst) {
+    !is.na(dane$rok_gim)
+  },
+  dane.m = function(dane, kontekst) {
+    !is.na(dane$rok_mat)
+  },
   wedrowniejsi.g = function(dane, kontekst) {
     dane2 = dane %>%
       group_by(id_szkoly_sp) %>%
