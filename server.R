@@ -21,9 +21,6 @@ source('pobierz.R')
 
 #   skala = c(0,100,200,500,1000,2000,5000,10000,20000,50000,100000,200000,500000,1000000,2000000)
 
-# **** WCZYTANIE DANYCH ****
-dane = data.frame()
-load('../sciezki4.RData') # ---> dane
 
 shinyServer(function(input, output, session) {
   session$allowReconnect(TRUE)
@@ -93,6 +90,10 @@ shinyServer(function(input, output, session) {
   wierszWspolny = res$wierszWspolny
 
   wylicz_dane_glob = function() {
+    # **** WCZYTANIE DANYCH ****
+    dane = data.frame()
+    load('../sciezki4.RData') # ---> dane
+    
     dane %>%
       postep_krok(postep.gl, msg='Dodaję oś X') %>%
       dodaj_os('X', input) %>%
