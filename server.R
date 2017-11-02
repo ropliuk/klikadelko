@@ -311,16 +311,14 @@ shinyServer(function(input, output, session) {
     if (!czy_wykres_dolny2()) {
       NULL
     } else {
-      postep.gl$set(message='Wykdane_globres maturzystów')
+      postep.gl$set(message='Wykres maturzystów')
 
       procenty_bez_matury =
-        print('ciap3')
         # dane_glob %>%
         # dane_dla_wiersza(warunki, 'liniowy') %>%
-
         # tab_dane_dla_serii[[nr_wiersza]] %>%
         dane_glob[tab_filtr_dla_serii[[nr_wiersza]],] %>%
-        dane_dla_wiersza(warunki, 'liniowy')
+        dane_dla_wiersza(warunki, 'liniowy') %>%
         summarize(liczba_uczniow = mean(is.na(wynik_mma)))
 
       wykres = plot_ly(procenty_bez_matury, type='bar') %>%
