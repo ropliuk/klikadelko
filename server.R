@@ -60,7 +60,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$przelicz, {
     ustaw_tab_diag_zmian()
-    przelicz()
+    przelicz(TRUE)
   })
 
   observeEvent(input$osie, {
@@ -93,7 +93,7 @@ shinyServer(function(input, output, session) {
     # **** WCZYTANIE DANYCH ****
     dane = data.frame()
     load('../sciezki4.RData') # ---> dane
-    
+
     dane %>%
       postep_krok(postep.gl, msg='Dodaję oś X') %>%
       dodaj_os('X', input) %>%
