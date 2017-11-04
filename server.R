@@ -98,21 +98,21 @@ shinyServer(function(input, output, session) {
 
   przelicz = function(czy_zmiana_osi = FALSE) {
     loguj('Przelicz')
-    loguj('grupa', input$f.gl.rok, 'gim', input$p.rok.g, 'mat', input$p.rok.m)
-    loguj('rodzaj_wykresu', stan$rodzaj_wykresu)
-    loguj('os_X', input$os.wartosc.X, input$os.jednostka.X)
-    loguj('os_Y', input$os.wartosc.Y, input$os.jednostka.Y)
     czas = proc.time()[['elapsed']]
 
     wejscie = oblicz_wejscie()
+    loguj_wejscie(wejscie)
     stan$serie <<- wylicz_serie(wejscie, stan$serie, tab_diag_zmian, czy_zmiana_osi)
+    loguj('Przeliczono')
+    loguj_serie(wejscie, stan$serie)
     odswiez_wykresy()
 
     ustaw_tab_diag_zmian(FALSE)
 
     stan$pam_uzyta = pam_uzyta()
     stan$pam_cala = pam_cala()
-    loguj('pamiec', 'uzyta', stan$pam_uzyta, 'cala', stan$pam_cala)
+    loguj('pamiec_uzyta', stan$pam_uzyta)
+    loguj('pamiec_cala', stan$pam_cala)
     stan$ost_czas = proc.time()[['elapsed']] - czas
   }
 

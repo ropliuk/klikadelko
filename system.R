@@ -7,7 +7,19 @@
 # }
 
 loguj = function(...) {
-  cat(file=stderr(), '[K]', paste(Sys.time()), ..., "\n")
+  l = list(...)
+  if (length(l) > 1) {
+    ogon = l[2:length(l)]
+  } else {
+    ogon = list()
+  }
+  cat(file=stderr(),
+    '[K]',
+    paste(Sys.time()),
+    sprintf('%2s%-20s', '', l[[1]]),
+    paste(ogon),
+    "\n"
+  )
 }
 
 liczba_z_basha = function(polecenie) {
