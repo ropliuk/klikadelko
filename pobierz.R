@@ -1,13 +1,14 @@
 source('dane.R')
 source('pom.R')
 source('osie.R')
+source('warunki.R')
 
-zapisz.csv = function(file, czyWiersze, tab_diag, tab_opisow, rodzaj_wykresu, opis_wykresu, input) {
+zapisz.csv = function(file, wejscie, serie) {
   tab = NULL
   for (i in 1:WIERSZE) {
-    if (czyWiersze[[i]]$czy) {
-      tab_dla_wiersza = tab_diag[[i]] %>%
-        sp_rename('os_Y', tab_opisow[[i]])
+    if (wejscie$czy_wiersze[[i]]) {
+      tab_dla_wiersza = serie[[i]]$gl %>%
+        sp_rename('os_Y', serie[[i]]$opis)
       if (is.null(tab)) {
         tab = tab_dla_wiersza
       } else {
@@ -16,8 +17,11 @@ zapisz.csv = function(file, czyWiersze, tab_diag, tab_opisow, rodzaj_wykresu, op
     }
   }
 
-  opis_osi_X = opis.osi.krotki('X', input)
-  opis_wykresu = opis.wykresu(rodzaj_wykresu, input, opis_wykresu)
+  opis_osi_X = opis.osi.krotki('X', wejscie$input)
+  opis_wykresu = opis.wykresu(
+    wejscie$rodzaj_wykresu,
+    wejscie$input,
+    opis.dla.warunkow(wejscie$warunki_wsp))
 
   zawartosc.gl = do.call(
     paste,

@@ -5,9 +5,9 @@ source('filtry.R')
 
 tab_diag_zmian = list()
 
-ustaw_tab_diag_zmian = function() {
+ustaw_tab_diag_zmian = function(na_co) {
   lapply(1:WIERSZE, function(i) {
-    tab_diag_zmian[[i]] <<- TRUE
+    tab_diag_zmian[[i]] <<- na_co
   })
 }
 
@@ -138,7 +138,7 @@ rysujWiersze = function(input, output, pokaz_licznosci) {
 
   observeEvent(wierszWspolny$edytujWiersz, {
     ustaw_tab_wyszarzen_wspolnych()
-    ustaw_tab_diag_zmian()
+    ustaw_tab_diag_zmian(TRUE)
     edytujWierszWspolny$edytuj <<- edytujWierszWspolny$edytuj + 1
   })
 

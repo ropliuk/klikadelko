@@ -26,9 +26,7 @@ filtr.dla.warunkow = function(dane, warunki) {
   for (gr in names(warunki)) {
     if (czy.filtr(warunki[[gr]])) {
       if (warunki[[gr]] != 'ogol') {
-        postep_krok(NULL,
-          postep.gl,
-          msg=sprintf('Nakladam filtr: %s', warunki[[gr]]))
+        postep_krok(tekst=sprintf('Nakladam filtr: %s', warunki[[gr]]))
       }
       filtr = filtr & filtry[[ warunki[[gr]] ]](dane, warunki)
     }
