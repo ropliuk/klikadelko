@@ -21,7 +21,7 @@ nowa_tab_wyszarzen = function() {
 tab_wyszarzen_wspolnych = nowa_tab_wyszarzen()
 tab_wyszarzen = nowa_tab_wyszarzen()
 
-rysujWiersze = function(input, output, pokaz_licznosci) {
+rysujWiersze = function(input, output, odswiez_wykresy) {
   czyWiersze = lapply(1:WIERSZE, function(i) {
     reactiveValues(czy = (i == 1))
   })
@@ -60,7 +60,7 @@ rysujWiersze = function(input, output, pokaz_licznosci) {
   lapply(1:WIERSZE, function(i) {
     observeEvent(wiersze[[i]]$pokazWielkoscProbek, {
       ktoreProbkowac$ktore <<- i
-      pokaz_licznosci()
+      odswiez_wykresy()
     })
   })
 
@@ -149,9 +149,9 @@ rysujWiersze = function(input, output, pokaz_licznosci) {
   })
 
   usunWiersz = function(i) {
-
     czyWiersze[[i]]$czy <<- FALSE
     stan$liczbaWierszy <<- stan$liczbaWierszy - 1
+    odswiez_wykresy()
   }
 
   observeEvent(input$dodajWiersz, {
