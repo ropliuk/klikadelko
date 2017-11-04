@@ -30,7 +30,7 @@ zapisz.csv = function(file, wejscie, serie) {
         tab %>%
           arrange(os_X) %>%
           sp_rename('os_X', opis_osi_X) %>%
-          write.table(stdout(), row.names=FALSE, na='', sep=';'))),
+          write.table(stdout(), row.names=FALSE, na='', sep=';', dec=','))),
       sep = '\n'
     ))
 
