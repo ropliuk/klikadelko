@@ -87,11 +87,6 @@ wierszUI = function(id) {
   )
 }
 
-koloruj = function(tekst, kolor) {
-  paste0('<font color=\"', kolor, '\">', tekst, '</font>')
-}
-
-
 wierszModul = function(input, output, session, id, numer, fun_wyszarzen, edytujWiersz) {
   observeEvent(edytujWiersz$edytuj, {
     if (edytujWiersz$edytuj > 0) {

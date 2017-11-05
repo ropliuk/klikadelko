@@ -1,3 +1,4 @@
+source('kolory.R')
 
 zarzadzajPanelem = function(input, output) {
   stan = reactiveValues(
@@ -40,10 +41,16 @@ rzeczyWPanelu = function(input, output, stan) {
   })
 
   output$pamiec = renderText({
-    sprintf('PAMIĘĆ: %.0f / %.0f MB', stan$pam_uzyta, stan$pam_cala)
+    sprintf('%.2f (+ %s) / %.2f GB',
+      stan$pam_uzyta,
+      koloruj(
+        sprintf('%.2f', stan$pam_dziecka),
+        ifelse(stan$duze_dziecko, 'ff0000', '000000')
+      ),
+      stan$pam_cala)
   })
 
   output$czas = renderText({
-    sprintf('czas (ost.): %.3f s', stan$ost_czas)
+    sprintf('czas (ost.): %.2f s', stan$ost_czas)
   })
 }

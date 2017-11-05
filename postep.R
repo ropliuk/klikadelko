@@ -1,25 +1,22 @@
-postep_start = function(n, msg='Obliczam') {
-  postep <<- shiny::Progress$new()
-  postep$set(message = msg, value = 0)
-  postep.max <<- n
-  postep
-}
+source('postep_rpc.R')
 
-postep_krok = function(dane=NULL, tekst=NULL, faza=NULL, p=postep.gl, i=1) {
-  p$inc(i/postep.max)
-  postep_faza(faza, tekst, p)
-  dane
-}
+wyswietl_postep = function(p, stan) {
+  if (p$op == 'start') {
+    postep.gl <<- shiny::Progress$new(max = p$max)
+    postep.gl$set(value = 0)
+  } else if (p$op == 'krok') {
+    postep.gl$set(
+      value = p$krok,
+      message = p$faza,
+      detail = p$tekst
+    )
+  } else if (p$op == 'koniec') {
+    postep.gl$close()
 
-postep_faza = function(faza=NULL, tekst=NULL, p=postep.gl) {
-  if (!is.null(faza)) {
-    p$set(message = faza)
+    stan$pam_uzyta = pam_uzyta()
+    stan$pam_dziecka = p$pam_uzyta
+    stan$pam_cala = stan$pam_uzyta + stan$pam_dziecka + pam_wolna()
+
+    stan$ost_czas = proc.time()[['elapsed']] - stan$ost_start
   }
-  if (!is.null(tekst)) {
-    p$set(detail = tekst)
-  }
-}
-
-postep_koniec = function(p) {
-  p$close()
 }

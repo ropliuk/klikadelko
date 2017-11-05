@@ -69,7 +69,7 @@ shinyUI(fluidPage(
           column(2, actionButton('ukryjParametry', 'Ukryj opcje')),
           column(6,
             fluidRow(
-              tags$div(tags$b(textOutput('pamiec')), align='center'),
+              tags$div(tags$b(htmlOutput('pamiec')), align='center'),
               tags$div(tags$b(textOutput('czas')), align='center')
             )
           ),

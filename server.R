@@ -1,5 +1,6 @@
 library(data.table)
 library(dplyr)
+library(parallel)
 library(plotly)
 library(pryr)
 library(shiny)
@@ -7,28 +8,35 @@ library(shinyBS)
 library(shinyjs)
 library(tidyr)
 
-source('pom.R')
-source('wiersze.R')
+source('dziecko.R')
 source('filtry.R')
-source('warunki.R')
-source('panel.R')
 source('kolory.R')
 source('osie.R')
-source('system.R')
-source('r_js.R')
+source('panel.R')
 source('pobierz.R')
-source('przelicz.R')
+source('pom.R')
+source('postep.R')
+source('r_js.R')
+source('rpc.R')
+source('system.R')
+source('warunki.R')
+source('wiersze.R')
 source('wykresy.R')
 
 shinyServer(function(input, output, session) {
   session$allowReconnect(TRUE)
+
+  dziecko = NULL
 
   stan = reactiveValues(
     rodzaj_wykresu = 'liniowy',
     wykresy = plot_ly(),
     serie = list(),
     pam_uzyta = pam_uzyta(),
+    pam_dziecka = 0,
     pam_cala = pam_cala(),
+    duze_dziecko = FALSE,
+    ost_start = 0,
     ost_czas = 0
   )
 
@@ -61,8 +69,11 @@ shinyServer(function(input, output, session) {
   observeEvent(
     c(input$f.gl.rok, input$p.rok.g, input$p.rok.m),
     {
-      ustaw_tab_diag_zmian(TRUE)
-      przelicz(pierwszaZmianaGrupy)
+      if (pierwszaZmianaGrupy) {
+        poczatek()
+      } else {
+        przelicz(FALSE)
+      }
       pierwszaZmianaGrupy <<- FALSE
     })
 
@@ -71,6 +82,12 @@ shinyServer(function(input, output, session) {
   wiersze = res$wiersze
   ktoreProbkowac = res$ktoreProbkowac
   wierszWspolny = res$wierszWspolny
+
+  poczatek = function() {
+    ustaw_tab_diag_zmian(TRUE)
+    odswiez_dziecko()
+    przelicz(TRUE)
+  }
 
   pokazOsie = function(){
     loguj('Osie')
@@ -85,36 +102,87 @@ shinyServer(function(input, output, session) {
     lacz_warunki(list(), wierszWspolny, input)
   }
 
-  oblicz_wejscie = function() {
+  oblicz_wejscie = function(czy_zmiana_osi=FALSE) {
     Wejscie(
       warunki = lapply(1:WIERSZE, wyznacz_warunki),
       warunki_wsp = wyznacz_warunki_wsp(),
       input = input,
       rodzaj_wykresu = stan$rodzaj_wykresu,
       ktore_probkowac = ktoreProbkowac$ktore,
-      czy_wiersze = lapply(1:WIERSZE, function(i) { czyWiersze[[i]]$czy })
+      czy_wiersze = lapply(1:WIERSZE, function(i) { czyWiersze[[i]]$czy }),
+      tab_diag_zmian = tab_diag_zmian,
+      czy_zmiana_osi = czy_zmiana_osi
     )
+  }
+
+  obsluz_postep = function(wyjscie) {
+    if (class(wyjscie) == 'Postep') {
+      wyswietl_postep(wyjscie, stan)
+      TRUE
+    } else {
+      FALSE
+    }
+  }
+
+  odswiez_dziecko = function() {
+    if (!is.null(dziecko)) {
+      zamknij_dziecko(dziecko)
+    }
+    dziecko <<- mcparallel(proces_dziecka())
+    # wyslij_do_dziecka(dziecko, 'Czesc!')
+    odbieraj_od_dziecka(dziecko, function(wyjscie, koniec) {
+      if (!obsluz_postep(wyjscie)) {
+        koniec()
+      }
+    })
   }
 
   przelicz = function(czy_zmiana_osi = FALSE) {
     loguj('Przelicz')
-    czas = proc.time()[['elapsed']]
+    stan$ost_start = proc.time()[['elapsed']]
 
-    wejscie = oblicz_wejscie()
+    wejscie = oblicz_wejscie(czy_zmiana_osi)
     loguj_wejscie(wejscie)
-    stan$serie <<- wylicz_serie(wejscie, stan$serie, tab_diag_zmian, czy_zmiana_osi)
+
+    wyslij_do_dziecka(dziecko, wejscie)
+    odbieraj_od_dziecka(dziecko, function(wyjscie, koniec) {
+      if (!obsluz_postep(wyjscie)) {
+        stan$serie <<- wyjscie
+        koniec()
+      }
+    })
+
     loguj('Przeliczono')
-    loguj_serie(wejscie, stan$serie)
+    # loguj_serie(wejscie, stan$serie)
     odswiez_wykresy()
 
     ustaw_tab_diag_zmian(FALSE)
 
-    stan$pam_uzyta = pam_uzyta()
-    stan$pam_cala = pam_cala()
     loguj('pamiec_uzyta', stan$pam_uzyta)
     loguj('pamiec_cala', stan$pam_cala)
-    stan$ost_czas = proc.time()[['elapsed']] - czas
+    loguj('czas', stan$ost_czas)
   }
+
+  czy_zamowic = FALSE
+  czy_zamowiono = FALSE
+
+  observe({
+    if (stan$pam_dziecka > 2) {
+      stan$duze_dziecko <<- TRUE
+      if (czy_zamowic) {
+        odswiez_dziecko()
+        czy_zamowic <<- FALSE
+        czy_zamowiono <<- TRUE
+      }
+      if (!czy_zamowiono) {
+        czy_zamowic <<- TRUE
+      }
+    } else {
+      stan$duze_dziecko <<- FALSE
+      czy_zamowiono <<- FALSE
+    }
+    invalidateLater(5000, session)
+  })
 
   mozna_rysowac = function() {
     (input$haslo == 'okelomza') ||

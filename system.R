@@ -27,11 +27,13 @@ liczba_z_basha = function(polecenie) {
 }
 
 pam_uzyta = function() {
-  liczba_z_basha(sprintf('ps -p %d -o rss=', Sys.getpid())) / 1024
+  liczba_z_basha(sprintf('ps -p %d -o rss=', Sys.getpid())) / 1048576
 }
 
-pam_cala = function() {
-  pam_wolna =
-    liczba_z_basha('cat /proc/meminfo | head -n 2 | tail -n 1 | cut -f2 -d: | tr -d \ bBkBmMgGtT') / 1024
-  pam_wolna + pam_uzyta()
+pam_wolna = function() {
+  liczba_z_basha('cat /proc/meminfo | head -n 2 | tail -n 1 | cut -f2 -d: | tr -d \ bBkBmMgGtT') / 1048576
+}
+
+pam_cala = function(pam_dziecka=0) {
+  pam_uzyta() + pam_dziecka + pam_wolna()
 }
