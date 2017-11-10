@@ -10,7 +10,7 @@ source('rpc.R')
 source('seria.R')
 source('warunki.R')
 
-proces_dziecka = function() {
+kod_dziecka = function(wejscie) {
   laduj_dane = function() {
     postep.gl <<- postep_start(2)
     postep_krok(faza='Ładuję dane')
@@ -124,15 +124,36 @@ proces_dziecka = function() {
     wynik
   }
 
-  # # musimy poczekac na sygnal od rodzica, zanim zaczniemy nadawac
-  # odbieraj_od_rodzica(function(wejscie, koniec) {
-  #   koniec()
-  # })
+  # Probny blad dziecka
+  # a = list()
+  # print(a[[1]])
+
+  # Komunikat startowy - konczymy nasluch od razu
+  odbieraj_od_rodzica(function(wejscie, koniec) {
+    serie <<- wejscie
+    koniec()
+  })
 
   dane_surowe = laduj_dane()
-  serie = list()
+  dane = dane_surowe %>% dodaj_osie(wejscie)
 
+  # Czekamy na zwykle polecenia lub polecenie konca
   odbieraj_od_rodzica(function(wejscie, koniec) {
-    serie <<- wylicz_serie(wejscie, serie)
+    if (class(wejscie) == 'Wejscie') {
+      serie <<- wylicz_serie(wejscie, serie)
+    } else if (wejscie == '__koniec__') {
+      koniec()
+    }
   })
+}
+
+proces_dziecka = function(wejscie) {
+  withCallingHandlers(captureStackTraces(kod_dziecka(wejscie)),
+    error = function(e) {
+      wyslij_do_rodzica(BladDziecka(
+        opis = conditionMessage(e),
+        stos = conditionStackTrace(e)
+      ))
+    }
+  )
 }

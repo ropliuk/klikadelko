@@ -115,6 +115,16 @@ shinyServer(function(input, output, session) {
     )
   }
 
+  obsluz_blad = function(wyjscie) {
+    if (class(wyjscie) == 'BladDziecka') {
+      loguj('Blad dziecka:', wyjscie$opis)
+      lapply(formatStackTrace(wyjscie$stos), function(x) { loguj('Stos:', x) })
+      TRUE
+    } else {
+      FALSE
+    }
+  }
+
   obsluz_postep = function(wyjscie) {
     if (class(wyjscie) == 'Postep') {
       wyswietl_postep(wyjscie, stan)
@@ -128,10 +138,10 @@ shinyServer(function(input, output, session) {
     if (!is.null(dziecko)) {
       zamknij_dziecko(dziecko)
     }
-    dziecko <<- mcparallel(proces_dziecka())
-    # wyslij_do_dziecka(dziecko, 'Czesc!')
+    dziecko <<- mcparallel(proces_dziecka(oblicz_wejscie()))
+    wyslij_do_dziecka(dziecko, stan$serie)
     odbieraj_od_dziecka(dziecko, function(wyjscie, koniec) {
-      if (!obsluz_postep(wyjscie)) {
+      if (!obsluz_blad(wyjscie) && !obsluz_postep(wyjscie)) {
         koniec()
       }
     })
@@ -146,7 +156,7 @@ shinyServer(function(input, output, session) {
 
     wyslij_do_dziecka(dziecko, wejscie)
     odbieraj_od_dziecka(dziecko, function(wyjscie, koniec) {
-      if (!obsluz_postep(wyjscie)) {
+      if (!obsluz_blad(wyjscie) && !obsluz_postep(wyjscie)) {
         stan$serie <<- wyjscie
         koniec()
       }

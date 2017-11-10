@@ -3,6 +3,7 @@ source('system.R')
 source('warunki.R')
 
 setOldClass('data.frame')
+setOldClass('pairlist')
 setOldClass('plotly')
 setOldClass('reactivevalues')
 
@@ -25,6 +26,11 @@ Seria = setRefClass('Seria', fields = list(
   gl = 'data.frame',
   licznosci = 'data.frame',
   mat = 'data.frame'
+))
+
+BladDziecka = setRefClass('BladDziecka', fields = list(
+  opis = 'character', # string
+  stos = 'pairlist'
 ))
 
 loguj_wejscie = function(wejscie) {

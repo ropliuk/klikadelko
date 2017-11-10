@@ -1,5 +1,5 @@
 source('filtry.R')
-source('postep.R')
+source('postep_rpc.R')
 
 is.string = function(input) {
   is.character(input) & length(input) == 1

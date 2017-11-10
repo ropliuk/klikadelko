@@ -41,6 +41,7 @@ postep_krok = function(dane=NULL, tekst=NULL, faza=NULL, p=postep.gl, i=1) {
 }
 
 postep_faza = function(faza=NULL, tekst=NULL, p=postep.gl) {
+  p$op = 'krok'
   postep_ustaw_teksty(faza, tekst, p)
   wyslij_do_rodzica(p)
 }
