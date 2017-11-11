@@ -12,11 +12,8 @@ source('warunki.R')
 
 kod_dziecka = function(wejscie) {
   laduj_dane = function() {
-    postep.gl <<- postep_start(2)
     postep_krok(faza='Ładuję dane')
     load('../sciezki4.RData') # ---> dane
-    postep_koniec(postep.gl)
-    wyslij_do_rodzica('DANE_GOTOWE')
     dane
   }
 
@@ -134,14 +131,17 @@ kod_dziecka = function(wejscie) {
     koniec()
   })
 
+  postep.gl <<- postep_start(4)
   dane_surowe = laduj_dane()
   dane = dane_surowe %>% dodaj_osie(wejscie)
+  postep_koniec(postep.gl)
+  wyslij_do_rodzica(Koniec())
 
   # Czekamy na zwykle polecenia lub polecenie konca
   odbieraj_od_rodzica(function(wejscie, koniec) {
     if (class(wejscie) == 'Wejscie') {
       serie <<- wylicz_serie(wejscie, serie)
-    } else if (wejscie == '__koniec__') {
+    } else if (class(wejscie) == 'Koniec') {
       koniec()
     }
   })

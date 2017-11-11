@@ -1,5 +1,7 @@
 library(parallel)
 
+Koniec = setRefClass('Koniec', fields = list())
+
 wyslij_do_dziecka = function(dziecko, wejscie) {
   save(wejscie, file='../wejscie.RData')
   parallel:::sendChildStdin(dziecko, 'cmd\n')
@@ -35,6 +37,6 @@ odbieraj_od_dziecka = function(dziecko, obsluga_wyjscia) {
 }
 
 zamknij_dziecko = function(dziecko) {
-  wyslij_do_dziecka(dziecko, '__koniec__')
+  wyslij_do_dziecka(dziecko, Koniec())
   parallel:::mckill(dziecko, signal = 9)
 }
