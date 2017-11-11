@@ -141,7 +141,7 @@ shinyServer(function(input, output, session) {
       zamknij_dziecko(dziecko)
     }
     dziecko <<- mcparallel(proces_dziecka(oblicz_wejscie()))
-    wyslij_do_dziecka(dziecko, stan$serie)
+    # wyslij_do_dziecka(dziecko, stan$serie)
     odbieraj_od_dziecka(dziecko, function(wyjscie, koniec) {
       if (!obsluz_blad(wyjscie) && !obsluz_postep(wyjscie)) {
         koniec()
@@ -157,6 +157,7 @@ shinyServer(function(input, output, session) {
     loguj_wejscie(wejscie)
 
     wyslij_do_dziecka(dziecko, wejscie)
+    # tu liczymy nasze sprawy
     odbieraj_od_dziecka(dziecko, function(wyjscie, koniec) {
       if (!obsluz_blad(wyjscie) && !obsluz_postep(wyjscie)) {
         stan$serie <<- wyjscie

@@ -45,6 +45,6 @@ zamknij_dziecko = function(dziecko) {
   parallel:::mckill(dziecko, signal = 9)
 }
 
-loguj_dz = funtion(tekst) {
+loguj_dz = function(tekst) {
   wyslij_do_rodzica(LogDziecka(tekst))
 }
