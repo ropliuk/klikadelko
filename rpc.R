@@ -46,5 +46,5 @@ zamknij_dziecko = function(dziecko) {
 }
 
 loguj_dz = function(tekst) {
-  wyslij_do_rodzica(LogDziecka(tekst))
+  wyslij_do_rodzica(LogDziecka(tekst = tekst))
 }

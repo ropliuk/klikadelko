@@ -122,6 +122,7 @@ shinyServer(function(input, output, session) {
       TRUE
     } else if (class(wyjscie) == 'LogDziecka') {
       loguj('Dziecko:', wyjscie$tekst)
+      TRUE
     } else {
       FALSE
     }
@@ -157,7 +158,6 @@ shinyServer(function(input, output, session) {
     loguj_wejscie(wejscie)
 
     wyslij_do_dziecka(dziecko, wejscie)
-    # tu liczymy nasze sprawy
     odbieraj_od_dziecka(dziecko, function(wyjscie, koniec) {
       if (!obsluz_blad(wyjscie) && !obsluz_postep(wyjscie)) {
         stan$serie <<- wyjscie
