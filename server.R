@@ -120,6 +120,8 @@ shinyServer(function(input, output, session) {
       loguj('Blad dziecka:', wyjscie$opis)
       lapply(formatStackTrace(wyjscie$stos), function(x) { loguj('Stos:', x) })
       TRUE
+    } else if (class(wyjscie) == 'LogDziecka') {
+      loguj('Dziecko:', wyjscie$tekst)
     } else {
       FALSE
     }
