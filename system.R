@@ -15,7 +15,7 @@ loguj = function(...) {
   }
   cat(file=stderr(),
     '[K]',
-    paste(Sys.time()),
+    format(Sys.time(), "%Y-%m-%d %H:%M:%OS3"),
     sprintf('%2s%-20s', '', l[[1]]),
     paste(ogon),
     "\n"
