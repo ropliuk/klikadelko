@@ -72,6 +72,7 @@ shinyServer(function(input, output, session) {
       if (pierwszaZmianaGrupy) {
         poczatek()
       } else {
+        ustaw_tab_diag_zmian(TRUE)
         przelicz(FALSE)
       }
       pierwszaZmianaGrupy <<- FALSE
