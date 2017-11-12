@@ -177,25 +177,19 @@ shinyServer(function(input, output, session) {
     loguj('czas', stan$ost_czas)
   }
 
-  czy_zamowic = FALSE
-  czy_zamowiono = FALSE
-
+  czy_odswiezyc = FALSE
   observe({
-    if (stan$pam_dziecka > 2) {
-      stan$duze_dziecko <<- TRUE
-      if (czy_zamowic) {
-        odswiez_dziecko()
-        czy_zamowic <<- FALSE
-        czy_zamowiono <<- TRUE
+    stan$duze_dziecko <<- (stan$pam_dziecka > 2)
+    if (stan$duze_dziecko) {
+      if (czy_odswiezyc) {
+        czy_odswiezyc <<- FALSE
+        isolate(odswiez_dziecko())
       }
-      if (!czy_zamowiono) {
-        czy_zamowic <<- TRUE
+      else {
+        czy_odswiezyc <<- TRUE
+        invalidateLater(5000, session)
       }
-    } else {
-      stan$duze_dziecko <<- FALSE
-      czy_zamowiono <<- FALSE
     }
-    invalidateLater(5000, session)
   })
 
   mozna_rysowac = function() {
