@@ -1,21 +1,19 @@
 
 sp_rename = function(dane, from, to) {
-  d2 = dane
-  names(d2)[names(d2) == from] = to
-  d2
+  dane %>% rename_(.dots = setNames(list(from), nm = to))
 }
 
-percentyle = function(dane, nkol_zr, nkol_doc) {
-  pom_perc = dane %>%
-    sp_rename(nkol_zr, 'klucz') %>%
-    group_by(klucz) %>%
-    drop_na(klucz) %>%
-    summarize(licznosc = n()) %>%
-    mutate(perc = cumsum(licznosc) / sum(licznosc)) %>%
-    sp_rename('perc', nkol_doc) %>%
-    select(-licznosc)
-  dane %>% left_join(pom_perc, by=list(x=nkol_zr, y='klucz'))
-}
+# percentyle = function(dane, nkol_zr, nkol_doc) {
+#   pom_perc = dane %>%
+#     sp_rename(nkol_zr, 'klucz') %>%
+#     group_by(klucz) %>%
+#     drop_na(klucz) %>%
+#     summarize(licznosc = n()) %>%
+#     mutate(perc = cumsum(licznosc) / sum(licznosc)) %>%
+#     sp_rename('perc', nkol_doc) %>%
+#     select(-licznosc)
+#   dane %>% left_join(pom_perc, by=list(x=nkol_zr, y='klucz'))
+# }
 
 percentyle_rocznikowe = function(dane, nkol_zr, nkol_doc, typ_roku) {
   prog_min = ifelse(typ_roku == 's', 2010, 2013)
@@ -31,7 +29,6 @@ percentyle_rocznikowe = function(dane, nkol_zr, nkol_doc, typ_roku) {
     group_by(rok_efektywny) %>%
     mutate(perc = cumsum(licznosc) / sum(licznosc)) %>%
     sp_rename('perc', nkol_doc) %>%
-    sp_rename('rok', nkol_rok) %>%
     ungroup() %>%
     select(-licznosc, -rok_efektywny)
   dane %>% left_join(pom_perc, by=list(x=nkol_zr, y='klucz'))
