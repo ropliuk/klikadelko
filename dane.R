@@ -37,13 +37,6 @@ wcisnij_w_przedzial = function(wart, dol, gora) {
 }
 
 percentyle_rocznikowe = function(dane, nkol_zr, nkol_doc, typ_roku) {
-  prog_min = ifelse(typ_roku == 's', 2010, 2013)
-  prog_max = ifelse(typ_roku == 's', 2013, 2016)
   nkol_rok = paste0('rok_', typ_roku)
-  dane %>%
-    sp_rename(nkol_rok, '.perc.rok') %>%
-    mutate(.perc.rok.efektywny = wcisnij_w_przedzial(.perc.rok, prog_min, prog_max)) %>%
-    sp_rename('.perc.rok', nkol_rok) %>%
-    percentyle(nkol_zr, nkol_doc, '.perc.rok.efektywny') %>%
-    select(-.perc.rok.efektywny)
+  dane %>% percentyle(nkol_zr, nkol_doc, nkol_rok)
 }
