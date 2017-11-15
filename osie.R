@@ -88,7 +88,9 @@ os_logika = list(
   os.perc = function(dane, wartosc) {
     spl = strsplit(wartosc, split='\\.')[[1]]
     koncowka = spl[[length(spl)]]
-    typ_roku = ifelse(koncowka == 's', 's', 'gm')
+    typ_szk = substr(koncowka, 1, 1)
+    loguj('os.perc', wartosc, koncowka, typ_szk)
+    typ_roku = list(s = 's', g = 'gim', m = 'mat')[[typ_szk]]
     dane %>%
       percentyle_rocznikowe('os', 'os_perc', typ_roku) %>%
       select(-os) %>%
