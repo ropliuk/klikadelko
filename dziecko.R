@@ -100,7 +100,8 @@ kod_dziecka = function(wejscie) {
           dane_wiersza = dane %>% dla_wiersza(wejscie, nr_wiersza)
           licznosc = nrow(dane_wiersza)
 
-          wynik[[nr_wiersza]] = Seria(
+          wynik[[nr_wiersza]] = list(
+            typ = 'Seria',
             gl = dane_wiersza %>% oblicz_gl(wejscie, nr_wiersza),
             licznosci = dane_wiersza %>% oblicz_licznosci(wejscie, nr_wiersza),
             mat = dane_wiersza %>% oblicz_mat(wejscie, nr_wiersza),
@@ -117,7 +118,7 @@ kod_dziecka = function(wejscie) {
 
     postep_koniec(postep.gl)
 
-    wyslij_do_rodzica(wynik)
+    wyslij_do_rodzica(list(typ = 'Wynik', wynik = wynik))
     wynik
   }
 
@@ -135,13 +136,13 @@ kod_dziecka = function(wejscie) {
   dane_surowe = laduj_dane()
   dane = dane_surowe %>% dodaj_osie(wejscie)
   postep_koniec(postep.gl)
-  wyslij_do_rodzica(Koniec())
+  wyslij_do_rodzica(list(typ = 'Koniec'))
 
   # Czekamy na zwykle polecenia lub polecenie konca
   odbieraj_od_rodzica(function(wejscie, koniec) {
-    if (class(wejscie) == 'Wejscie') {
+    if (wejscie$typ == 'Wejscie') {
       serie <<- wylicz_serie(wejscie, serie)
-    } else if (class(wejscie) == 'Koniec') {
+    } else if (wejscie$typ == 'Koniec') {
       koniec()
     }
   })
@@ -150,7 +151,8 @@ kod_dziecka = function(wejscie) {
 proces_dziecka = function(wejscie) {
   withCallingHandlers(captureStackTraces(kod_dziecka(wejscie)),
     error = function(e) {
-      wyslij_do_rodzica(BladDziecka(
+      wyslij_do_rodzica(list(
+        typ = 'BladDziecka',
         opis = conditionMessage(e),
         stos = conditionStackTrace(e)
       ))

@@ -104,7 +104,8 @@ shinyServer(function(input, output, session) {
   }
 
   oblicz_wejscie = function(czy_zmiana_osi=FALSE) {
-    Wejscie(
+    list(
+      type = 'Wejscie',
       warunki = lapply(1:WIERSZE, wyznacz_warunki),
       warunki_wsp = wyznacz_warunki_wsp(),
       input = input,
@@ -117,11 +118,11 @@ shinyServer(function(input, output, session) {
   }
 
   obsluz_blad = function(wyjscie) {
-    if (class(wyjscie) == 'BladDziecka') {
+    if (wyjscie$typ == 'BladDziecka') {
       loguj('Blad dziecka:', wyjscie$opis)
       lapply(formatStackTrace(wyjscie$stos), function(x) { loguj('Stos:', x) })
       TRUE
-    } else if (class(wyjscie) == 'LogDziecka') {
+    } else if (wyjscie$typ == 'LogDziecka') {
       loguj('Dziecko:', wyjscie$tekst)
       TRUE
     } else {
@@ -130,7 +131,7 @@ shinyServer(function(input, output, session) {
   }
 
   obsluz_postep = function(wyjscie) {
-    if (class(wyjscie) == 'Postep') {
+    if (wyjscie$typ == 'Postep') {
       wyswietl_postep(wyjscie, stan)
       TRUE
     } else {
@@ -161,7 +162,7 @@ shinyServer(function(input, output, session) {
     wyslij_do_dziecka(dziecko, wejscie)
     odbieraj_od_dziecka(dziecko, function(wyjscie, koniec) {
       if (!obsluz_blad(wyjscie) && !obsluz_postep(wyjscie)) {
-        stan$serie <<- wyjscie
+        stan$serie <<- wyjscie$wynik
         koniec()
       }
     })

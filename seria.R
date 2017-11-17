@@ -2,36 +2,36 @@ source('pom.R')
 source('system/system.R')
 source('warunki.R')
 
-setOldClass('data.frame')
-setOldClass('pairlist')
-setOldClass('plotly')
-setOldClass('reactivevalues')
+# setOldClass('data.frame')
+# setOldClass('pairlist')
+# setOldClass('plotly')
+# setOldClass('reactivevalues')
 
-Wejscie = setRefClass('Wejscie',
-  fields = list(
-    warunki = 'list',
-    warunki_wsp = 'list',
-    input = 'reactivevalues',
-    rodzaj_wykresu = 'character', # string
-    ktore_probkowac = 'numeric',
-    czy_wiersze = 'list', # lista booleanow
-    tab_diag_zmian = 'list', # lista booleanow
-    czy_zmiana_osi = 'logical'
-  )
-)
+# Wejscie = setRefClass('Wejscie',
+#   fields = list(
+#     warunki = 'list',
+#     warunki_wsp = 'list',
+#     input = 'reactivevalues',
+#     rodzaj_wykresu = 'character', # string
+#     ktore_probkowac = 'numeric',
+#     czy_wiersze = 'list', # lista booleanow
+#     tab_diag_zmian = 'list', # lista booleanow
+#     czy_zmiana_osi = 'logical'
+#   )
+# )
 
-Seria = setRefClass('Seria', fields = list(
-  opis = 'character', # string
-  licznosc = 'numeric',
-  gl = 'data.frame',
-  licznosci = 'data.frame',
-  mat = 'data.frame'
-))
+# Seria = setRefClass('Seria', fields = list(
+#   opis = 'character', # string
+#   licznosc = 'numeric',
+#   gl = 'data.frame',
+#   licznosci = 'data.frame',
+#   mat = 'data.frame'
+# ))
 
-BladDziecka = setRefClass('BladDziecka', fields = list(
-  opis = 'character', # string
-  stos = 'pairlist'
-))
+# BladDziecka = setRefClass('BladDziecka', fields = list(
+#   opis = 'character', # string
+#   stos = 'pairlist'
+# ))
 
 loguj_wejscie = function(wejscie) {
   loguj(

@@ -2,11 +2,11 @@ library(parallel)
 
 source('system/koduj.R')
 
-Koniec = setRefClass('Koniec', fields = list())
+# Koniec = setRefClass('Koniec', fields = list())
 
-LogDziecka = setRefClass('LogDziecka', fields = list(
-  tekst = 'character' # string
-))
+# LogDziecka = setRefClass('LogDziecka', fields = list(
+#   tekst = 'character' # string
+# ))
 
 wyslij_do_dziecka = function(dziecko, wejscie) {
   save(wejscie, file='../wejscie.RData')
@@ -28,7 +28,7 @@ odbieraj_od_rodzica = function(obsluga_wejscia) {
 }
 
 wyslij_do_rodzica = function(wyjscie) {
-  parallel:::sendMaster(koduj_raw(wyjscie))
+  parallel:::sendMaster(charToRaw(koduj_hex(wyjscie)))
 }
 
 odbieraj_od_dziecka = function(dziecko, obsluga_wyjscia) {
@@ -37,16 +37,17 @@ odbieraj_od_dziecka = function(dziecko, obsluga_wyjscia) {
     czy_koniec <<- TRUE
   }
   while (!czy_koniec) {
-    wyjscie = dekoduj_raw(parallel:::readChild(dziecko))
+    wyjscie = dekoduj_hex(rawToChar(parallel:::readChild(dziecko)))
+    loguj('WYJSCIE', wyjscie)
     obsluga_wyjscia(wyjscie, koniec)
   }
 }
 
 zamknij_dziecko = function(dziecko) {
-  wyslij_do_dziecka(dziecko, Koniec())
+  wyslij_do_dziecka(dziecko, list(typ = 'Koniec'))
   parallel:::mckill(dziecko, signal = 9)
 }
 
 loguj_dz = function(tekst) {
-  wyslij_do_rodzica(LogDziecka(tekst = tekst))
+  wyslij_do_rodzica(list(typ = 'LogDziecka', tekst = tekst))
 }
