@@ -1,5 +1,7 @@
 library(parallel)
 
+source('system/koduj.R')
+
 Koniec = setRefClass('Koniec', fields = list())
 
 LogDziecka = setRefClass('LogDziecka', fields = list(
@@ -26,7 +28,7 @@ odbieraj_od_rodzica = function(obsluga_wejscia) {
 }
 
 wyslij_do_rodzica = function(wyjscie) {
-  parallel:::sendMaster(serialize(wyjscie, NULL))
+  parallel:::sendMaster(koduj_raw(wyjscie))
 }
 
 odbieraj_od_dziecka = function(dziecko, obsluga_wyjscia) {
@@ -35,7 +37,7 @@ odbieraj_od_dziecka = function(dziecko, obsluga_wyjscia) {
     czy_koniec <<- TRUE
   }
   while (!czy_koniec) {
-    wyjscie = unserialize(parallel:::readChild(dziecko))
+    wyjscie = dekoduj_raw(parallel:::readChild(dziecko))
     obsluga_wyjscia(wyjscie, koniec)
   }
 }

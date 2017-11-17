@@ -6,7 +6,7 @@ source('kolory.R')
 source('osie.R')
 source('postep.R')
 source('pom.R')
-source('rpc.R')
+source('system/rpc.R')
 source('seria.R')
 source('warunki.R')
 

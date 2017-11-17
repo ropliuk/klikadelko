@@ -1,5 +1,5 @@
-source('rpc.R')
-source('system.R')
+source('system/rpc.R')
+source('system/system.R')
 
 Postep = setRefClass('Postep', fields = list(
   op = 'character', # 'start', 'krok', 'koniec'

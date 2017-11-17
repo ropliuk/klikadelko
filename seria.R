@@ -1,5 +1,5 @@
 source('pom.R')
-source('system.R')
+source('system/system.R')
 source('warunki.R')
 
 setOldClass('data.frame')
