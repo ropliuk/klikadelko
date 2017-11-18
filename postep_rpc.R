@@ -30,7 +30,12 @@ wyslij_postep = function() {
 }
 
 postep_start = function(n) {
+  p.op <<- 'start'
+  p.krok <<- 0
   p.max <<- n
+  p.faza <<- ''
+  p.tekst <<- ''
+  p.pam_uzyta <<- 0
   wyslij_postep()
   NULL
 }

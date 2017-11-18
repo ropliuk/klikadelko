@@ -82,8 +82,6 @@ kod_dziecka = function(wejscie) {
   }
 
   wylicz_serie = function(wejscie, stare_serie) {
-    postep.gl <<- postep_start(20)
-
     if (wejscie$czy_zmiana_osi) {
       dane <<- dane_surowe %>% dodaj_osie(wejscie)
     }
@@ -116,11 +114,6 @@ kod_dziecka = function(wejscie) {
       }
     }
 
-    postep_koniec(postep.gl)
-
-    if (!is.null(stare_serie)) {
-      wyslij_do_rodzica(list(typ = 'Wynik', wynik = wynik))
-    }
     wynik
   }
 
@@ -134,7 +127,7 @@ kod_dziecka = function(wejscie) {
   #   koniec()
   # })
 
-  postep.gl <<- postep_start(4)
+  postep.gl <<- postep_start(20)
   dane_surowe = laduj_dane()
   dane = dane_surowe %>% dodaj_osie(wejscie)
   serie = wylicz_serie(wejscie, NULL)
@@ -144,7 +137,10 @@ kod_dziecka = function(wejscie) {
   # Czekamy na zwykle polecenia lub polecenie konca
   odbieraj_od_rodzica(function(wejscie, koniec) {
     if (wejscie$typ == 'Wejscie') {
+      postep.gl <<- postep_start(20)
       serie <<- wylicz_serie(wejscie, serie)
+      postep_koniec(postep.gl)
+      wyslij_do_rodzica(list(typ = 'Wynik', wynik = serie))
     } else if (wejscie$typ == 'Koniec') {
       koniec()
     }
