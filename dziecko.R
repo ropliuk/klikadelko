@@ -154,6 +154,9 @@ kod_dziecka = function(wejscie) {
 proces_dziecka = function(wejscie) {
   withCallingHandlers(captureStackTraces(kod_dziecka(wejscie)),
     error = function(e) {
+      f=file('../blad_dziecka.log')
+      dput(file=f, e)
+      close(f)
       wyslij_do_rodzica(list(
         typ = 'BladDziecka',
         opis = conditionMessage(e),
