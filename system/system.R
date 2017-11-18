@@ -6,20 +6,28 @@
 #   print(mem_used())
 # }
 
-loguj = function(...) {
+loguj = function(..., fn=NULL) {
   l = list(...)
   if (length(l) > 1) {
     ogon = l[2:length(l)]
   } else {
     ogon = list()
   }
-  cat(file=stderr(),
+  if (!is.null(fn)) {
+    f = file(fn, open='a')
+  } else {
+    f = stderr()
+  }
+  cat(file=f,
     '[K]',
     format(Sys.time(), "%Y-%m-%d %H:%M:%OS3"),
     sprintf('%2s%-20s', '', l[[1]]),
     paste(ogon),
     "\n"
   )
+  if (!is.null(fn)) {
+    close(f)
+  }
 }
 
 liczba_z_basha = function(polecenie) {
