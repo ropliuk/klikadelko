@@ -93,7 +93,7 @@ kod_dziecka = function(wejscie) {
     for (nr_wiersza in 1:WIERSZE) {
       if (wejscie$czy_wiersze[[nr_wiersza]]) {
         postep_faza(sprintf('Seria danych %d', nr_wiersza))
-        if (!wejscie$tab_diag_zmian[[nr_wiersza]]) {
+        if (!is.null(stare_serie) && !wejscie$tab_diag_zmian[[nr_wiersza]]) {
           postep_krok(tekst='Przepisuję poprzedni wynik')
           wynik[[nr_wiersza]] = stare_serie[[nr_wiersza]]
         } else {
@@ -118,7 +118,9 @@ kod_dziecka = function(wejscie) {
 
     postep_koniec(postep.gl)
 
-    wyslij_do_rodzica(list(typ = 'Wynik', wynik = wynik))
+    if (!is.null(stare_serie)) {
+      wyslij_do_rodzica(list(typ = 'Wynik', wynik = wynik))
+    }
     wynik
   }
 
@@ -126,15 +128,16 @@ kod_dziecka = function(wejscie) {
   # a = list()
   # print(a[[1]])
 
-  # Komunikat startowy - konczymy nasluch od razu
-  odbieraj_od_rodzica(function(wejscie, koniec) {
-    serie <<- wejscie
-    koniec()
-  })
+  # # Komunikat startowy - konczymy nasluch od razu
+  # odbieraj_od_rodzica(function(wejscie, koniec) {
+  #   serie <<- wejscie
+  #   koniec()
+  # })
 
   postep.gl <<- postep_start(4)
   dane_surowe = laduj_dane()
   dane = dane_surowe %>% dodaj_osie(wejscie)
+  serie = wylicz_serie(wejscie, NULL)
   postep_koniec(postep.gl)
   wyslij_do_rodzica(list(typ = 'Koniec'))
 
