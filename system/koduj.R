@@ -30,7 +30,7 @@ koduj_tekst = function(x) {
 
 dekoduj_tekst = function(x) {
   if (substr(x, 1, 4) == 'KKD ') {
-    tab = strsplit(substr(x, 5, 100), ' ')[[1]]
+    tab = strsplit(substring(x, 5), ' ')[[1]]
     len = as.numeric(tab[[1]])
     s = tab[[2]]
     if (nchar(s) != len) {

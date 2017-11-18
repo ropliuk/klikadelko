@@ -9,8 +9,8 @@ source('system/koduj.R')
 # ))
 
 wyslij_do_dziecka = function(dziecko, wejscie) {
-  save(wejscie, file='../wejscie.RData')
-  parallel:::sendChildStdin(dziecko, 'cmd\n')
+  loguj('WEJSCIE', nchar(koduj_tekst(wejscie)))
+  parallel:::sendChildStdin(dziecko, paste0(koduj_tekst(wejscie), '\n'))
 }
 
 odbieraj_od_rodzica = function(obsluga_wejscia) {
@@ -20,8 +20,8 @@ odbieraj_od_rodzica = function(obsluga_wejscia) {
   }
   f <- file("stdin")
   open(f)
-  while(!czy_koniec && length(line <- readLines(f,n=1)) > 0) {
-    load('../wejscie.RData')
+  while(!czy_koniec && length(line <- readLines(f, n=1)) > 0) {
+    wejscie = dekoduj_tekst(line)
     obsluga_wejscia(wejscie, koniec)
   }
   close(f)
