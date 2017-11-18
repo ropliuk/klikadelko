@@ -125,7 +125,7 @@ shinyServer(function(input, output, session) {
   obsluz_blad = function(wyjscie) {
     if (wyjscie$typ == 'BladDziecka') {
       loguj('Blad dziecka:', wyjscie$opis)
-      lapply(formatStackTrace(wyjscie$stos), function(x) { loguj('Stos:', x) })
+      lapply(wyjscie$stos, function(x) { loguj('Stos:', x) })
       TRUE
     } else if (wyjscie$typ == 'LogDziecka') {
       loguj('Dziecko:', wyjscie$tekst)
