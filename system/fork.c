@@ -61,7 +61,7 @@ int main(void) {
 	} else if (fk()) {
 		// Filtr R -> D
 		przepinaj(p, 0, 1);
-		char* cmd[] = { "/usr/bin/Rscript", "/home/olekz/soc/klikadelko/system/filtr_ssh.R", NULL };
+		char* cmd[] = { "/usr/bin/Rscript", "/home/olekz/soc/klikadelko/system/filtr_kkd.R", NULL };
 		ex(cmd);
 	} else if (fk()) {
 		// Dziecko
@@ -71,7 +71,7 @@ int main(void) {
 	} else {
 		// Filtr D -> R
 		przepinaj(p, 2, 3);
-		char* cmd[] = { "/usr/bin/Rscript", "/home/olekz/soc/klikadelko/system/filtr_ssh.R", NULL };
+		char* cmd[] = { "/usr/bin/Rscript", "/home/olekz/soc/klikadelko/system/filtr_kkd.R", NULL };
 		ex(cmd);
 	}
 	return 0;

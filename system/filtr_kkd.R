@@ -6,9 +6,9 @@ cin <- file("stdin")
 open(cin)
 
 while(!czy_koniec && length(line <- readLines(cin, n=1)) > 0) {
-  if (line == 'SSH KONIEC') {
+  if (line == 'KKD KONIEC') {
     koniec = TRUE
-  } else if (substr(line, 1, 4) == 'SSH ') {
+  } else if (substr(line, 1, 4) == 'KKD ') {
     tab = strsplit(substr(line, 5, 100), ' ')[[1]]
     len = as.numeric(tab[[1]])
     s = tab[[2]]

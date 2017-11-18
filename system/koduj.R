@@ -23,7 +23,7 @@ dekoduj_hex = function(x) {
   dekoduj_raw(hex_do_raw(x))
 }
 
-koduj_ssh = function(x) {
+koduj_tekst = function(x) {
   h = koduj_hex(x)
-  sprintf('SSH %d %s', nchar(h), h)
+  sprintf('KKD %d %s', nchar(h), h)
 }
