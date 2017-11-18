@@ -1,7 +1,8 @@
-#include <stdlib.h>
-#include <unistd.h>
 #include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 void pp(int *pipefd) {
 	if (pipe(pipefd) == -1) {
@@ -27,6 +28,17 @@ void ex(char** cmd) {
 	}
 }
 
+char **kopiuj_argv(int argc, char **argv) {
+	char **wynik = new char*[argc + 1];
+	int i;
+	for (i = 0; i < argc; i++) {
+		wynik[i] = new char[strlen(argv[i]) + 1];
+		strcpy(wynik[i], argv[i]);
+	}
+	wynik[argc] = NULL;
+	return wynik;
+}
+
 void przepinaj(int **p, int we, int wy) {
 	dup2(p[we][0], 0);
 	dup2(p[wy][1], 1);
@@ -41,12 +53,13 @@ void przepinaj(int **p, int we, int wy) {
 	}
 }
 
-int main(void) {
-	int **p = new int*[5];
+int main(int argc, char **argv) {
+	const int LICZBA_LACZ = 2;
+	int **p = new int*[LICZBA_LACZ + 1];
 	int i;
-	for (i = 0; i < 5; i++) {
+	for (i = 0; i < LICZBA_LACZ + 1; i++) {
 		p[i] = new int[2];
-		if (i < 4) {
+		if (i < LICZBA_LACZ) {
 			pp(p[i]);
 		} else {
 			p[i][0] = 0;
@@ -55,24 +68,12 @@ int main(void) {
 
 	if (fk()) {
 		// Rodzic
-		przepinaj(p, 3, 0);
-		char* cmd[] = { "/usr/bin/Rscript", "/home/olekz/soc/test_rodzic.R", NULL };
-		ex(cmd);
-	} else if (fk()) {
-		// Filtr R -> D
-		przepinaj(p, 0, 1);
-		char* cmd[] = { "/usr/bin/Rscript", "/home/olekz/soc/klikadelko/system/filtr_kkd.R", NULL };
-		ex(cmd);
-	} else if (fk()) {
-		// Dziecko
-		przepinaj(p, 1, 2);
-		char* cmd[] = { "/usr/bin/ssh", "ja@192.168.0.101", "/usr/bin/Rscript", "/home/ja/soc/test_dziecko.R", NULL };
+		przepinaj(p, 1, 0);
+		char* cmd[] = { "/usr/bin/Rscript", "../test_rodzic.R", NULL };
 		ex(cmd);
 	} else {
-		// Filtr D -> R
-		przepinaj(p, 2, 3);
-		char* cmd[] = { "/usr/bin/Rscript", "/home/olekz/soc/klikadelko/system/filtr_kkd.R", NULL };
-		ex(cmd);
+		przepinaj(p, 0, 1);
+		ex(kopiuj_argv(argc - 1, argv + 1));
 	}
 	return 0;
 }
