@@ -108,7 +108,12 @@ shinyServer(function(input, output, session) {
       type = 'Wejscie',
       warunki = lapply(1:WIERSZE, wyznacz_warunki),
       warunki_wsp = wyznacz_warunki_wsp(),
-      input = input,
+      input = list(
+        os.wartosc.X = input$os.wartosc.X,
+        os.jednostka.X = input$os.jednostka.X,
+        os.wartosc.Y = input$os.wartosc.Y,
+        os.jednostka.Y = input$os.jednostka.Y
+      ),
       rodzaj_wykresu = stan$rodzaj_wykresu,
       ktore_probkowac = ktoreProbkowac$ktore,
       czy_wiersze = lapply(1:WIERSZE, function(i) { czyWiersze[[i]]$czy }),
