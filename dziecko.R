@@ -6,8 +6,9 @@ source('kolory.R')
 source('osie.R')
 source('postep.R')
 source('pom.R')
-source('system/rpc.R')
 source('seria.R')
+source('system/rpc.R')
+source('system/system.R')
 source('warunki.R')
 
 kod_dziecka = function(wejscie) {
@@ -145,17 +146,4 @@ kod_dziecka = function(wejscie) {
       koniec()
     }
   })
-}
-
-proces_dziecka = function(wejscie) {
-  withCallingHandlers(captureStackTraces(kod_dziecka(wejscie)),
-    error = function(e) {
-      loguj('Blad dziecka', e, fn='../blad_dziecka.log')
-      wyslij_do_rodzica(list(
-        typ = 'BladDziecka',
-        opis = conditionMessage(e),
-        stos = formatStackTrace(conditionStackTrace(e))
-      ))
-    }
-  )
 }

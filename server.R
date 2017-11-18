@@ -8,10 +8,10 @@ library(shinyBS)
 library(shinyjs)
 library(tidyr)
 
-source('dziecko.R')
 source('filtry.R')
 source('kolory.R')
 source('osie.R')
+source('niania.R')
 source('panel.R')
 source('pobierz.R')
 source('pom.R')
@@ -25,8 +25,6 @@ source('wykresy.R')
 
 shinyServer(function(input, output, session) {
   session$allowReconnect(TRUE)
-
-  dziecko = NULL
 
   stan = reactiveValues(
     rodzaj_wykresu = 'liniowy',
@@ -145,11 +143,8 @@ shinyServer(function(input, output, session) {
   }
 
   odswiez_dziecko = function() {
-    if (!is.null(dziecko)) {
-      zamknij_dziecko(dziecko)
-    }
-    dziecko <<- mcparallel(proces_dziecka(oblicz_wejscie()))
-    odbieraj_od_dziecka(dziecko, function(wyjscie, koniec) {
+    nianiu_odswiez(oblicz_wejscie())
+    nianiu_odbieraj(function(wyjscie, koniec) {
       if (!obsluz_blad(wyjscie) && !obsluz_postep(wyjscie)) {
         koniec()
       }
@@ -163,8 +158,8 @@ shinyServer(function(input, output, session) {
     wejscie = oblicz_wejscie(czy_zmiana_osi)
     loguj_wejscie(wejscie)
 
-    wyslij_do_dziecka(dziecko, wejscie)
-    odbieraj_od_dziecka(dziecko, function(wyjscie, koniec) {
+    nianiu_wyslij(wejscie)
+    nianiu_odbieraj(function(wyjscie, koniec) {
       if (!obsluz_blad(wyjscie) && !obsluz_postep(wyjscie)) {
         stan$serie <<- wyjscie$wynik
         koniec()
