@@ -133,17 +133,14 @@ kod_dziecka = function(wejscie) {
   dane = dane_surowe %>% dodaj_osie(wejscie)
   serie = wylicz_serie(wejscie, NULL)
   postep_koniec(postep.gl)
-  wyslij_do_rodzica(list(typ = 'Koniec'))
+  wyslij_do_rodzica(koniec())
 
   # Czekamy na zwykle polecenia lub polecenie konca
-  odbieraj_od_rodzica(function(wejscie, koniec) {
-    if (wejscie$typ == 'Wejscie') {
-      postep.gl <<- postep_start(20)
-      serie <<- wylicz_serie(wejscie, serie)
-      postep_koniec(postep.gl)
-      wyslij_do_rodzica(list(typ = 'Wynik', wynik = serie))
-    } else if (wejscie$typ == 'Koniec') {
-      koniec()
-    }
+  odbieraj_od_rodzica(function(wejscie) {
+    postep.gl <<- postep_start(20)
+    serie <<- wylicz_serie(wejscie, serie)
+    postep_koniec(postep.gl)
+    wyslij_do_rodzica(list(typ = 'Wynik', wynik = serie))
+    wyslij_do_rodzica(koniec())
   })
 }

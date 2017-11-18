@@ -144,10 +144,9 @@ shinyServer(function(input, output, session) {
 
   odswiez_dziecko = function() {
     nianiu_odswiez(oblicz_wejscie())
-    nianiu_odbieraj(function(wyjscie, koniec) {
-      if (!obsluz_blad(wyjscie) && !obsluz_postep(wyjscie)) {
-        koniec()
-      }
+    nianiu_odbieraj(function(wyjscie) {
+      obsluz_blad(wyjscie)
+      obsluz_postep(wyjscie)
     })
   }
 
@@ -159,10 +158,9 @@ shinyServer(function(input, output, session) {
     loguj_wejscie(wejscie)
 
     nianiu_wyslij(wejscie)
-    nianiu_odbieraj(function(wyjscie, koniec) {
+    nianiu_odbieraj(function(wyjscie) {
       if (!obsluz_blad(wyjscie) && !obsluz_postep(wyjscie)) {
         stan$serie <<- wyjscie$wynik
-        koniec()
       }
     })
 
