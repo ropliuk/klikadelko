@@ -11,7 +11,6 @@ library(tidyr)
 source('filtry.R')
 source('kolory.R')
 source('osie.R')
-source('niania.R')
 source('panel.R')
 source('pobierz.R')
 source('pom.R')
@@ -22,6 +21,12 @@ source('system/system.R')
 source('warunki.R')
 source('wiersze.R')
 source('wykresy.R')
+
+if (START_ZLOZONY) {
+  source('lokaj_s.R')
+} else {
+  source('niania.R')
+}
 
 shinyServer(function(input, output, session) {
   session$allowReconnect(TRUE)

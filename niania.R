@@ -1,3 +1,4 @@
+library(shiny)
 
 source('dziecko.R')
 source('system/rpc.R')

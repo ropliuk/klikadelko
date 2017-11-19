@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
 	if (fk()) {
 		// Rodzic
 		przepinaj(p, 1, 0);
-		char* cmd[] = { "/usr/bin/Rscript", "../test_rodzic.R", NULL };
+		char* cmd[] = { "/usr/local/bin/Rscript", "./start_zlozony.R", NULL };
 		ex(cmd);
 	} else {
 		przepinaj(p, 0, 1);

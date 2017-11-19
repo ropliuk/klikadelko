@@ -1,3 +1,3 @@
 library(shiny)
-START_ZLOZONY = FALSE
+START_ZLOZONY = TRUE
 runApp('.')
