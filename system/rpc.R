@@ -27,10 +27,12 @@ odbieraj_tekst = function(obsluga_wejscia) {
   open(f)
   while(!czy_koniec && length(line <- readLines(f, n=1)) > 0) {
     wejscie = dekoduj_tekst(line)
-    if (wejscie$typ == 'Koniec') {
-      czy_koniec = TRUE
-    } else {
-      obsluga_wejscia(wejscie)
+    if (!is.null(wejscie)) {
+      if (wejscie$typ == 'Koniec') {
+        czy_koniec = TRUE
+      } else {
+        obsluga_wejscia(wejscie)
+      }
     }
   }
   close(f)
