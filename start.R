@@ -1,3 +1,4 @@
+print('[S] Witaj!')
 library(shiny)
 START_ZLOZONY = FALSE
-runApp('.')
+runApp('.', port=38381)
