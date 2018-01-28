@@ -28,4 +28,3 @@ sleep 3
 
 echo "Uruchamiam przegladarke..."
 firefox localhost:38381
-

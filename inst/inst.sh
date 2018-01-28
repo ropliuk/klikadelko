@@ -19,4 +19,3 @@ instaluj libssl-dev
 instaluj gfortran
 
 Rscript inst.R
-

@@ -2,7 +2,7 @@ instaluj = function(p) {
 	if (p %in% installed.packages()) {
 		print(sprintf('Pakiet %s juz zainstalowany', p))
 	} else {
-		install.packages(p, repos='http://cran.uni-muenster.de/') 
+		install.packages(p, repos='http://ftp.gwdg.de/pub/misc/cran/')
 	}
 }
 
@@ -15,4 +15,3 @@ instaluj('shinyjs')
 instaluj('shinyBS')
 instaluj('pryr')
 instaluj('ggsci')
-
